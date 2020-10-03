@@ -19,11 +19,28 @@ def JsonAnalysis(JsonText):
     Character_List = []
     Character_List = data["data"]["avatars"]
     for i in Character_List:
+        if (i["element"] == "None"):
+            Character_Type = "无属性"
+        elif (i["element"] == "Anemo"):
+            Character_Type = "风属性"
+        elif (i["element"] == "Pyro"):
+            Character_Type = "火属性"
+        elif (i["element"] == "Geo"):
+            Character_Type = "岩属性"
+        elif (i["element"] == "Electro"):
+            Character_Type = "雷属性"
+        elif (i["element"] == "Cryo"):
+            Character_Type = "冰属性"
+        elif (i["element"] == "Hydro"):
+            Character_Type = "水属性"
+        else:
+            Character_Type = "草属性"
         TempText = (
             i["name"] + 
             "（" + str(i["level"]) + "级，" 
             + "好感度为" + str(i["fetter"]) + "级，" 
-            + str(i["rarity"]) + "★角色） "
+            + str(i["rarity"]) + "★角色，"
+            + Character_Type + "）"
         )
         Character_Info = Character_Info + TempText
     Account_Info = (
