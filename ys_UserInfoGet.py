@@ -22,6 +22,7 @@ def JsonAnalysis(JsonText):
         TempText = (
             i["name"] + 
             "（" + str(i["level"]) + "级，" 
+            + "好感度为" + ["fetter"] + "级，" 
             + str(i["rarity"]) + "★角色） "
         )
         Character_Info = Character_Info + TempText
