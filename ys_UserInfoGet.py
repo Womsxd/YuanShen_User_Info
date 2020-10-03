@@ -15,6 +15,13 @@ def GetInfo(Uid):
 
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
+    if ( data["retcode"] != 0):
+        return (
+            "Api报错，返回内容为：\r\n" 
+            + JsonText + "\r\n出现这种情况可能的UID输入错误 or 不存在"
+        )
+    else:
+        pass
     Character_Info = "人物："
     Character_List = []
     Character_List = data["data"]["avatars"]
