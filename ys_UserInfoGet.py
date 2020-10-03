@@ -49,8 +49,15 @@ def JsonAnalysis(JsonText):
     return Character_Info + "\r\n" + Account_Info
 
 if __name__ == "__main__":
-    uid = str(int(input("请输入要查询的UID(目前仅支持国内官服)：")))
-    print("正在查询UID" + uid + "的原神信息")
-    UidInfo = JsonAnalysis(GetInfo(uid))
-    print("uid " + uid + "的信息为：\r\n" + UidInfo)
+    while True:
+        uid = input("请输入要查询的UID(目前仅支持国内官服，退出请输入exit)：")
+        if (uid == exit):
+            exit()
+        else:
+            pass
+        uid = str(int(uid))
+        print("正在查询UID" + uid + "的原神信息")
+        UidInfo = JsonAnalysis(GetInfo(uid))
+        print("uid " + uid + "的信息为：\r\n" + UidInfo)
     pass
+pass
