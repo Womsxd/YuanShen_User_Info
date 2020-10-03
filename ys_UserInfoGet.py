@@ -51,7 +51,7 @@ def JsonAnalysis(JsonText):
 if __name__ == "__main__":
     while True:
         uid = input("请输入要查询的UID(目前仅支持国内官服，退出请输入exit)：")
-        if (uid == exit):
+        if (uid == "exit"):
             exit()
         else:
             pass
