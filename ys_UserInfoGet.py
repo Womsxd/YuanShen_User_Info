@@ -52,9 +52,9 @@ def JsonAnalysis(JsonText):
         Character_Info = Character_Info + TempText
     Account_Info = (
         "活跃天数：" + str(data["data"]["stats"]["active_day_number"]) +
-        "，一共达成了：" + str(data["data"]["stats"]["achievement_number"]) +
-        "个成就，风神瞳收集了：" + str(data["data"]["stats"]["anemoculus_number"]) +
-        "个，岩神瞳收集了：" + str(data["data"]["stats"]["geoculus_number"]) +
+        "，一共达成了" + str(data["data"]["stats"]["achievement_number"]) +
+        "个成就，风神瞳收集了" + str(data["data"]["stats"]["anemoculus_number"]) +
+        "个，岩神瞳收集了" + str(data["data"]["stats"]["geoculus_number"]) +
         "个，目前获得了" + str(data["data"]["stats"]["avatar_number"]) +
         "个角色，解锁了" + str(data["data"]["stats"]["way_point_number"]) +
         "个传送点和" + str(data["data"]["stats"]["domain_number"]) +
