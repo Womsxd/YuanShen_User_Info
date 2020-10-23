@@ -1,15 +1,40 @@
 #https://github.com/Womsxd/YuanShen_User_Info
 import json
+import time
+import string
+import random
+import hashlib
 import requests
+
+def md5(text):
+    md5 = hashlib.md5()
+    md5.update(text.encode())
+    return md5.hexdigest()
+
+
+def DSGet():
+    mhyVersion = "2.1.0"
+    n = md5(mhyVersion)
+    i = str(int(time.time()))
+    r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
+    c = md5("salt=" + n + "&t="+ i + "&r=" + r)
+    return i + "," + r + "," + c
+  
 
 def GetInfo(Uid):
     req = requests.get(
         url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server=cn_gf01&role_id=" + Uid ,
         headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Origin': 'https://webstatic.mihoyo.com',
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'zh-CN,zh;q=0.9,zh-HK;q=0.8',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+            'DS': DSGet(),
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.1.0',
+            'Rferer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+            'x-rpc-app_version': '2.1.0',
+            'x-rpc-client_type': '4',
+            'X-Requested-With': 'com.mihoyo.hyperion'
         }
     )
     return req.text
