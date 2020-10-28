@@ -68,13 +68,33 @@ def JsonAnalysis(JsonText):
             Character_Type = "水属性"
         else:
             Character_Type = "草属性"
-        TempText = (
-            i["name"] + 
-            "（" + str(i["level"]) + "级，" 
-            + "好感度为" + str(i["fetter"]) + "级，" 
-            + str(i["rarity"]) + "★角色，"
-            + Character_Type + "）"
-        )
+        if (i["name"] == "旅行者"):
+            if (i["image"].find("UI_AvatarIcon_PlayerGirl") != -1):
+                TempText = (
+                    i["name"]+ "[萤——妹妹]" + 
+                    "（" + str(i["level"]) + "级，" 
+                    + Character_Type + "）"
+                )
+            elif (i["image"].find("UI_AvatarIcon_PlayerBoy") != -1):
+                TempText = (
+                    i["name"]+ "[空——哥哥]" + 
+                    "（" + str(i["level"]) + "级，" 
+                    + Character_Type + "）"
+                )
+            else:
+                TempText = (
+                    i["name"]+ "[性别判断失败]" + 
+                    "（" + str(i["level"]) + "级，" 
+                    + Character_Type + "）"
+                )
+        else:
+            TempText = (
+                i["name"] + 
+                "（" + str(i["level"]) + "级，" 
+                + "好感度为" + str(i["fetter"]) + "级，" 
+                + str(i["rarity"]) + "★角色，"
+                + Character_Type + "）"
+            )
         Character_Info = Character_Info + TempText
     Account_Info = (
         "活跃天数：" + str(data["data"]["stats"]["active_day_number"]) +
@@ -109,6 +129,7 @@ if __name__ == "__main__":
         uid = str(int(uid))
         print("正在查询UID" + uid + "的原神信息")
         UidInfo = JsonAnalysis(GetInfo(uid))
+        #UidInfo = GetInfo(uid)
         print("uid " + uid + "的信息为：\r\n" + UidInfo)
     pass
 pass
