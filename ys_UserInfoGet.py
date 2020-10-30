@@ -127,9 +127,11 @@ if __name__ == "__main__":
         else:
             pass
         uid = str(int(uid))
-        print("正在查询UID" + uid + "的原神信息")
-        UidInfo = JsonAnalysis(GetInfo(uid))
-        #UidInfo = GetInfo(uid)
-        print("uid " + uid + "的信息为：\r\n" + UidInfo)
+        if (len(uid) == 9):
+            print("正在查询UID" + uid + "的原神信息")
+            UidInfo = JsonAnalysis(GetInfo(uid))
+            print("uid " + uid + "的信息为：\r\n" + UidInfo)
+        else:
+            print("UID长度有误！")
     pass
 pass
