@@ -25,15 +25,15 @@ def GetInfo(Uid):
     req = requests.get(
         url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server=cn_gf01&role_id=" + Uid ,
         headers = {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'Origin': 'https://webstatic.mihoyo.com',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,zh;q=0.9,zh-HK;q=0.8',
+            'Accept': 'application/json, text/plain, */*',
             'DS': DSGet(),
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.1.0',
-            'Rferer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+            'Origin': 'https://webstatic.mihoyo.com',
             'x-rpc-app_version': '2.1.0',
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
             'x-rpc-client_type': '4',
+            'Rferer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'zh-CN,en-US;q=0.8',
             'X-Requested-With': 'com.mihoyo.hyperion'
         }
     )
