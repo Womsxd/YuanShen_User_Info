@@ -31,7 +31,7 @@ def GetInfo(Uid):
             'x-rpc-app_version': '2.1.0',
             'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
             'x-rpc-client_type': '4',
-            'Rferer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+            'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'zh-CN,en-US;q=0.8',
             'X-Requested-With': 'com.mihoyo.hyperion'
@@ -127,7 +127,7 @@ if __name__ == "__main__":
         else:
             pass
         uid = str(int(uid))
-        if (len(uid) == 9 and uid[1] == "1"):
+        if (len(uid) == 9):
             print("正在查询UID" + uid + "的原神信息")
             UidInfo = JsonAnalysis(GetInfo(uid))
             print("uid " + uid + "的信息为：\r\n" + UidInfo)
