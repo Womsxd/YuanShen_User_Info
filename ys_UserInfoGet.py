@@ -122,16 +122,16 @@ def JsonAnalysis(JsonText):
 if __name__ == "__main__":
     while True:
         uid = input("请输入要查询的UID(目前仅支持国内官服，退出请输入exit)：")
-        if (uid == "exit"):
+        if (uid.find("exit") != -1):
             exit()
         else:
             pass
         uid = str(int(uid))
-        if (len(uid) == 9):
+        if (len(uid) == 9 and uid[1] == "1"):
             print("正在查询UID" + uid + "的原神信息")
             UidInfo = JsonAnalysis(GetInfo(uid))
             print("uid " + uid + "的信息为：\r\n" + UidInfo)
         else:
-            print("UID长度有误！")
+            print("UID输入有误！！\r\n请检查UID是否为9位数或为国服UID！")
     pass
 pass
