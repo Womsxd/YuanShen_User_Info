@@ -1,4 +1,5 @@
 #https://github.com/Womsxd/YuanShen_User_Info
+import sys
 import json
 import time
 import string
@@ -122,12 +123,14 @@ def JsonAnalysis(JsonText):
 if __name__ == "__main__":
     while True:
         uid = input("请输入要查询的UID(目前仅支持国内官服，退出请输入exit)：")
-        if (uid.find("exit") != -1):
-            exit()
-        else:
-            pass
-        uid = str(int(uid))
-        if (len(uid) == 9):
+        try:
+            uid = str(int(uid))
+        except:
+            if (uid == "exit"):
+                sys.exit(0)
+            print("输入有误！")
+            continue
+        if (len(uid) == 9 and uid[0] == "1"):
             print("正在查询UID" + uid + "的原神信息")
             UidInfo = JsonAnalysis(GetInfo(uid))
             print("uid " + uid + "的信息为：\r\n" + UidInfo)
