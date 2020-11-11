@@ -114,8 +114,8 @@ def JsonAnalysis(JsonText):
     Account_Info = Account_Info + (
         "，一共开启了" + str(data["data"]["stats"]["common_chest_number"]) +
         "个普通宝箱，" + str(data["data"]["stats"]["exquisite_chest_number"]) +
-        "个精致宝箱，" + str(data["data"]["stats"]["luxurious_chest_number"]) +
-        "个珍贵宝箱，" + str(data["data"]["stats"]["precious_chest_number"]) +
+        "个精致宝箱，" + str(data["data"]["stats"]["precious_chest_number"]) +
+        "个珍贵宝箱，" + str(data["data"]["stats"]["luxurious_chest_number"]) +
         "个华丽宝箱"
     )
     Prestige_Info = "声望信息："
