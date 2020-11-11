@@ -118,7 +118,14 @@ def JsonAnalysis(JsonText):
         "个珍贵宝箱，" + str(data["data"]["stats"]["precious_chest_number"]) +
         "个华丽宝箱"
     )
-    return Character_Info + "\r\n" + Account_Info
+    Prestige_Info = "声望信息："
+    Prestige_list = []
+    Prestige_list = data["data"]["city_explorations"]
+    for i in Prestige_list:
+        Prestige_Info = (Prestige_Info + i["name"] +
+        "的探索进度为" + str(i["exploration_percentage"] / 10) +
+        "%，声望等级为：" + str(i["level"]) + "级")
+    return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info)
 
 if __name__ == "__main__":
     while True:
