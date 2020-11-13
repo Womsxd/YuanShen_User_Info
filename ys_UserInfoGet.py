@@ -10,7 +10,7 @@ import requests
 def md5(text):
     md5 = hashlib.md5()
     md5.update(text.encode())
-    return md5.hexdigest()
+    return (md5.hexdigest())
 
 
 def DSGet():
@@ -19,26 +19,30 @@ def DSGet():
     i = str(int(time.time()))
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
-    return i + "," + r + "," + c
+    return (i + "," + r + "," + c)
   
 
 def GetInfo(Uid, ServerID):
-    req = requests.get(
-        url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server="+ ServerID +"&role_id=" + Uid ,
-        headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'DS': DSGet(),
-            'Origin': 'https://webstatic.mihoyo.com',
-            'x-rpc-app_version': '2.1.0',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
-            'x-rpc-client_type': '4',
-            'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,en-US;q=0.8',
-            'X-Requested-With': 'com.mihoyo.hyperion'
-        }
-    )
-    return req.text
+    try:
+        req = requests.get(
+            url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server="+ ServerID +"&role_id=" + Uid ,
+            headers = {
+                'Accept': 'application/json, text/plain, */*',
+                'DS': DSGet(),
+                'Origin': 'https://webstatic.mihoyo.com',
+                'x-rpc-app_version': '2.1.0',
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
+                'x-rpc-client_type': '4',
+                'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+                'Accept-Encoding': 'gzip, deflate',
+                'Accept-Language': 'zh-CN,en-US;q=0.8',
+                'X-Requested-With': 'com.mihoyo.hyperion'
+            }
+        )
+        return (req.text)
+    except:
+        print ("访问失败，请重试！")
+        sys.exit (1)
 
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
@@ -138,14 +142,13 @@ if __name__ == "__main__":
             print("输入有误！")
             continue
         if (len(uid) == 9):
+            print("正在查询UID" + uid + "的原神信息")
             if (uid[0] == "1"):
-                print("正在查询UID" + uid + "的原神信息(官服)")
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
-                print("uid " + uid + "的信息为：\r\n" + UidInfo)
+                print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo)
             elif (uid[0] == "5"):
-                print("正在查询UID" + uid + "的原神信息(B服)")
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
-                print("uid " + uid + "的信息为：\r\n" + UidInfo)
+                print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
             else:
                 print("UID输入有误！！\r\n请检查UID是否为国服UID！")
         else:
