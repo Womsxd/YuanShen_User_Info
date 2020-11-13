@@ -22,9 +22,9 @@ def DSGet():
     return i + "," + r + "," + c
   
 
-def GetInfo(Uid):
+def GetInfo(Uid, ServerID):
     req = requests.get(
-        url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server=cn_gf01&role_id=" + Uid ,
+        url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server="+ ServerID +"&role_id=" + Uid ,
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'DS': DSGet(),
@@ -129,7 +129,7 @@ def JsonAnalysis(JsonText):
 
 if __name__ == "__main__":
     while True:
-        uid = input("请输入要查询的UID(目前仅支持国内官服，退出请输入exit)：")
+        uid = input("请输入要查询的UID(目前仅支持国内服务器，退出请输入exit)：")
         try:
             uid = str(int(uid))
         except:
@@ -137,11 +137,18 @@ if __name__ == "__main__":
                 sys.exit(0)
             print("输入有误！")
             continue
-        if (len(uid) == 9 and uid[0] == "1"):
-            print("正在查询UID" + uid + "的原神信息")
-            UidInfo = JsonAnalysis(GetInfo(uid))
-            print("uid " + uid + "的信息为：\r\n" + UidInfo)
+        if (len(uid) == 9):
+            if (uid[0] == "1"):
+                print("正在查询UID" + uid + "的原神信息(官服)")
+                UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
+                print("uid " + uid + "的信息为：\r\n" + UidInfo)
+            elif (uid[0] == "5"):
+                print("正在查询UID" + uid + "的原神信息(B服)")
+                UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
+                print("uid " + uid + "的信息为：\r\n" + UidInfo)
+            else:
+                print("UID输入有误！！\r\n请检查UID是否为国服UID！")
         else:
-            print("UID输入有误！！\r\n请检查UID是否为9位数或为国服UID！")
+            print("UID长度有误！！\r\n请检查输入的UID是否为9位数！")
     pass
 pass
