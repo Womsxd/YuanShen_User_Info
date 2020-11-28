@@ -7,6 +7,8 @@ import random
 import hashlib
 import requests
 
+mhyVersion = "2.2.1"
+
 def md5(text):
     md5 = hashlib.md5()
     md5.update(text.encode())
@@ -14,8 +16,14 @@ def md5(text):
 
 
 def DSGet():
-    mhyVersion = "2.1.0"
-    n = md5(mhyVersion)
+    global mhyVersion
+    if (mhyVersion == "2.1.0"):
+        n = md5(mhyVersion)
+    elif (mhyVersion == "2.2.1"):
+        n = "cx2y9z9a29tfqvr1qsq6c7yz99b5jsqt"
+    else:
+        mhyVersion = "2.2.1"
+        n = "cx2y9z9a29tfqvr1qsq6c7yz99b5jsqt"
     i = str(int(time.time()))
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
@@ -30,7 +38,7 @@ def GetInfo(Uid, ServerID):
                 'Accept': 'application/json, text/plain, */*',
                 'DS': DSGet(),
                 'Origin': 'https://webstatic.mihoyo.com',
-                'x-rpc-app_version': '2.1.0',
+                'x-rpc-app_version': mhyVersion,
                 'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
                 'x-rpc-client_type': '4',
                 'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
@@ -42,7 +50,8 @@ def GetInfo(Uid, ServerID):
         return (req.text)
     except:
         print ("访问失败，请重试！")
-        sys.exit (1)
+        #sys.exit (1)
+        exit ()
 
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
