@@ -7,7 +7,7 @@ import random
 import hashlib
 import requests
 
-mhyVersion = "2.2.1"
+mhyVersion = "2.4.0"
 
 def md5(text):
     md5 = hashlib.md5()
@@ -19,11 +19,11 @@ def DSGet():
     global mhyVersion
     if (mhyVersion == "2.1.0"):
         n = md5(mhyVersion)
-    elif (mhyVersion == "2.2.1"):
-        n = "cx2y9z9a29tfqvr1qsq6c7yz99b5jsqt"
+    elif (mhyVersion == "2.4.0"):
+        n = "pbcfcvnfsm5s2w4x3lsq8caor7v8nlqm"
     else:
-        mhyVersion = "2.2.1"
-        n = "cx2y9z9a29tfqvr1qsq6c7yz99b5jsqt"
+        mhyVersion = "2.4.0"
+        n = "pbcfcvnfsm5s2w4x3lsq8caor7v8nlqm"
     i = str(int(time.time()))
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
@@ -40,7 +40,7 @@ def GetInfo(Uid, ServerID):
                 'Origin': 'https://webstatic.mihoyo.com',
                 'x-rpc-app_version': mhyVersion,
                 'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
-                'x-rpc-client_type': '4',
+                'x-rpc-client_type': '5',
                 'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
                 'Accept-Encoding': 'gzip, deflate',
                 'Accept-Language': 'zh-CN,en-US;q=0.8',
