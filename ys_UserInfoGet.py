@@ -7,7 +7,7 @@ import random
 import hashlib
 import requests
 
-mhyVersion = "2.4.0"
+mhyVersion = "2.3.0"
 
 def md5(text):
     md5 = hashlib.md5()
@@ -16,14 +16,7 @@ def md5(text):
 
 
 def DSGet():
-    global mhyVersion
-    if (mhyVersion == "2.1.0"):
-        n = md5(mhyVersion)
-    elif (mhyVersion == "2.4.0"):
-        n = "pbcfcvnfsm5s2w4x3lsq8caor7v8nlqm"
-    else:
-        mhyVersion = "2.4.0"
-        n = "pbcfcvnfsm5s2w4x3lsq8caor7v8nlqm"
+    n = "h8w582wxwgqvahcdkpvdhbh2w9casgfl"
     i = str(int(time.time()))
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
