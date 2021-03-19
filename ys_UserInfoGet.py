@@ -8,6 +8,7 @@ import hashlib
 import requests
 
 mhyVersion = "2.3.0"
+cache_Cookie = ""
 
 def md5(text):
     md5 = hashlib.md5()
@@ -21,7 +22,19 @@ def DSGet():
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
     return (i + "," + r + "," + c)
-  
+
+def Cookie_get():
+    global cache_Cookie
+    if (cache_Cookie == ""):
+        r = open("cookie.txt",mode='r+')
+        tmp_Cookie = r.read()
+        if (tmp_Cookie == ""):
+            tmp_Cookie = input("请输入Cookie:")
+            r.write(tmp_Cookie)
+            r.flush()
+            r.close()
+        cache_Cookie = tmp_Cookie
+    return cache_Cookie
 
 def GetInfo(Uid, ServerID):
     try:
@@ -37,18 +50,21 @@ def GetInfo(Uid, ServerID):
                 'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
                 'Accept-Encoding': 'gzip, deflate',
                 'Accept-Language': 'zh-CN,en-US;q=0.8',
-                'X-Requested-With': 'com.mihoyo.hyperion'
+                'X-Requested-With': 'com.mihoyo.hyperion',
+                "Cookie": Cookie_get()
             }
         )
         return (req.text)
     except:
         print ("访问失败，请重试！")
-        #sys.exit (1)
-        exit ()
+        sys.exit (1)
 
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
     if ( data["retcode"] != 0):
+        if (data["retcode"] == 10001):
+            os.remove("cookie.txt")
+            return("Cookie错误/过期，请重置Cookie")
         return (
             "Api报错，返回内容为：\r\n" 
             + JsonText + "\r\n出现这种情况可能的UID输入错误 or 不存在"
