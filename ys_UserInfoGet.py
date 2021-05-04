@@ -34,7 +34,7 @@ def Cookie_get():
             r.flush()
             r.close()
         cache_Cookie = tmp_Cookie
-    return cache_Cookie
+    return (cache_Cookie)
 
 def GetInfo(Uid, ServerID):
     try:
@@ -179,7 +179,6 @@ if __name__ == "__main__":
             print("正在查询UID" + uid + "的原神信息")
             if (uid[0] == "1"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
-                #UidInfo = GetInfo(uid ,"cn_gf01")
                 print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo)
             elif (uid[0] == "5"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
