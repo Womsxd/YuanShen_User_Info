@@ -7,7 +7,7 @@ import random
 import hashlib
 import requests
 
-mhyVersion = "2.3.0"
+mhyVersion = "2.7.0"
 cache_Cookie = ""
 
 def md5(text):
@@ -17,7 +17,7 @@ def md5(text):
 
 
 def DSGet():
-    n = "h8w582wxwgqvahcdkpvdhbh2w9casgfl"
+    n = "14bmu1mz0yuljprsfgpvjh3ju2ni468r"
     i = str(int(time.time()))
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
@@ -140,14 +140,30 @@ def JsonAnalysis(JsonText):
         "个珍贵宝箱，" + str(data["data"]["stats"]["luxurious_chest_number"]) +
         "个华丽宝箱"
     )
+    Area_list = []
+    Area_list = data["data"]["world_explorations"]
     Prestige_Info = "声望信息："
-    Prestige_list = []
-    Prestige_list = data["data"]["city_explorations"]
-    for i in Prestige_list:
-        Prestige_Info = (Prestige_Info + i["name"] +
-        "的探索进度为" + str(i["exploration_percentage"] / 10) +
-        "%，声望等级为：" + str(i["level"]) + "级")
-    return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info)
+    ExtraArea_Info = "特殊地区信息："
+    for i in Area_list:
+        if (i["type"] == "Reputation"):
+            Prestige_Info = (Prestige_Info + i["name"] +
+            "的探索进度为" + str(i["exploration_percentage"] / 10) +
+            "%，声望等级为：" + str(i["level"]) + "级|")
+        else:
+            ExtraArea_Info = (ExtraArea_Info + i["name"] +
+            "的探索进度为" + str(i["exploration_percentage"] / 10) +
+            "%，区域等级为：" + str(i["level"]) + "级|")
+    Home_Info = "家园信息："
+    Home_List = []
+    Home_List = data["data"]["homes"]
+    for i in Home_List:
+        Home_Info = (Home_Info + i["name"] +
+        "区域已获得摆件数量为" + str(i["item_num"]) +
+        ",最高洞天仙力为" + str(i["comfort_num"]) +
+        "（" + i["comfort_level_name"] +
+        "）,最高历史访客为" + str(i["visit_num"]) +
+        "，信任等级为：" + str(i["level"]) + "级")
+    return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
 
 if __name__ == "__main__":
     while True:
@@ -163,6 +179,7 @@ if __name__ == "__main__":
             print("正在查询UID" + uid + "的原神信息")
             if (uid[0] == "1"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
+                #UidInfo = GetInfo(uid ,"cn_gf01")10434082
                 print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo)
             elif (uid[0] == "5"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
