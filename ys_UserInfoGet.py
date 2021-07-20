@@ -1,5 +1,6 @@
 #https://github.com/Womsxd/YuanShen_User_Info
 import os
+import re
 import sys
 import json
 import time
@@ -9,7 +10,6 @@ import hashlib
 import requests
 
 from settings import *
-
 
 def md5(text):
     md5 = hashlib.md5()
@@ -57,6 +57,23 @@ def GetInfo(Uid, ServerID):
     )
     return (req.text)
 
+def calcStringLength(text):
+    # 令len(str(string).encode()) = m, len(str(string)) = n
+    # 字符串所占位置长度 = (m + n) / 2
+    # 但由于'·'属于一个符号而非中文字符所以需要把长度 - 1
+    if re.search('·', text) is not None:
+        stringlength = int(((str(text).encode()) + len(text) - 1) / 2)
+    elif re.search(r'[“”]', text) is not None:
+        stringlength = int((len(str(text).encode()) + len(str(text))) / 2) - 2
+    else:
+        stringlength = int((len(str(text).encode()) + len(text)) / 2)
+
+    return stringlength
+
+def spaceWrap(text, flex=10):
+    stringlength = calcStringLength(text)
+
+    return '%s' % (str(text)) + '%s' % (' ' * int((int(flex) - stringlength)))
 
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
@@ -72,7 +89,11 @@ def JsonAnalysis(JsonText):
         pass
     Character_Info = "人物：\n\t"
     Character_List = []
+    name_length = []
     Character_List = data["data"]["avatars"]
+    for i in Character_List:
+        name_length.append(calcStringLength(i["name"]))
+    namelength_max = int(max(name_length))
     for i in Character_List:
         if (i["element"] == "None"):
             Character_Type = "无属性"
@@ -93,28 +114,28 @@ def JsonAnalysis(JsonText):
         if (i["name"] == "旅行者"):
             if (i["image"].find("UI_AvatarIcon_PlayerGirl") != -1):
                 TempText = (
-                    i["name"]+ "[荧]" + 
-                    "（" + str(i["level"]) + "级，" 
+                    spaceWrap(str("荧"), namelength_max) + 
+                    "（" + spaceWrap(str(i["level"]), 2) + "级，" 
                     + Character_Type + "）\n\t"
                 )
             elif (i["image"].find("UI_AvatarIcon_PlayerBoy") != -1):
                 TempText = (
-                    i["name"]+ "[空]" + 
-                    "（" + str(i["level"]) + "级，" 
+                    spaceWrap(str("空"), namelength_max) + 
+                    "（" + spaceWrap(str(i["level"]), 2) + "级，" 
                     + Character_Type + "）\n\t"
                 )
             else:
                 TempText = (
-                    i["name"]+ "[性别判断失败]" + 
-                    "（" + str(i["level"]) + "级，" 
+                    i["name"]+ "[?]" + 
+                    "（" + spaceWrap(str(i["level"]), 2) + "级，" 
                     + Character_Type + "）\n\t"
                 )
         else:
             TempText = (
-                i["name"] + 
-                "（" + str(i["level"]) + "级，" 
+                spaceWrap(str(i["name"]), namelength_max) + 
+                "（" + spaceWrap(str(i["level"]), 2) + "级，" 
                 + str(i["actived_constellation_num"]) + "命，"
-                + "好感度" + str(i["fetter"]) + "，" 
+                + spaceWrap(str(i["fetter"]), 2) + "好感度，" 
                 + str(i["rarity"]) + "★，"
                 + Character_Type + "）\n\t"
             )
@@ -153,16 +174,17 @@ def JsonAnalysis(JsonText):
             ExtraArea_Info = (ExtraArea_Info + "\t" + i["name"] +
             "，探索进度：" + str(i["exploration_percentage"] / 10) +
             "%，区域等级：" + str(i["level"]) + "级\n")
-    Home_Info = "家园信息：\n"
+    Home_Info = "家园信息：\n已开启区域："
     Home_List = []
     Home_List = data["data"]["homes"]
+    homeworld_list = []
     for i in Home_List:
-        Home_Info = (Home_Info + i["name"] +
-        "区域已获得摆件数量为" + str(i["item_num"]) +
-        "\n\t最高洞天仙力为" + str(i["comfort_num"]) +
-        "（" + i["comfort_level_name"] +
-        "）\n\t最高历史访客为" + str(i["visit_num"]) +
-        "\n\t信任等级为：" + str(i["level"]) + "级\n")
+        homeworld_list.append(i["name"])
+    Home_Info += '、'.join(homeworld_list)
+    Home_Info += "\n\t最高洞天仙力为" + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0]["comfort_level_name"] + '）'
+    Home_Info += "\n\t已获得摆件数量" + str(Home_List[0]["item_num"])
+    Home_Info += "\n\t信任等级为" + str(Home_List[0]["level"]) + '级'
+    Home_Info += "\n\t最高历史访客数" + str(Home_List[0]["visit_num"])
 
     return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
 
