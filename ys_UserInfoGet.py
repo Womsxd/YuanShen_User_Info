@@ -8,8 +8,8 @@ import random
 import hashlib
 import requests
 
-mhyVersion = "2.7.0"
-cache_Cookie = ""
+from settings import *
+
 
 def md5(text):
     md5 = hashlib.md5()
@@ -18,7 +18,7 @@ def md5(text):
 
 
 def DSGet():
-    n = "14bmu1mz0yuljprsfgpvjh3ju2ni468r"
+    n = salt
     i = str(int(time.time()))
     r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
     c = md5("salt=" + n + "&t="+ i + "&r=" + r)
@@ -38,27 +38,25 @@ def Cookie_get():
     return (cache_Cookie)
 
 def GetInfo(Uid, ServerID):
-    try:
-        req = requests.get(
-            url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server="+ ServerID +"&role_id=" + Uid ,
-            headers = {
-                'Accept': 'application/json, text/plain, */*',
-                'DS': DSGet(),
-                'Origin': 'https://webstatic.mihoyo.com',
-                'x-rpc-app_version': mhyVersion,
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
-                'x-rpc-client_type': '5',
-                'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
-                'Accept-Encoding': 'gzip, deflate',
-                'Accept-Language': 'zh-CN,en-US;q=0.8',
-                'X-Requested-With': 'com.mihoyo.hyperion',
-                "Cookie": Cookie_get()
-            }
-        )
-        return (req.text)
-    except:
-        print ("访问失败，请重试！")
-        sys.exit (1)
+    # 原本的try……except没有意义并且会掩盖错误信息，删除
+    req = requests.get(
+        url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server="+ ServerID +"&role_id=" + Uid ,
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'DS': DSGet(),
+            'Origin': 'https://webstatic.mihoyo.com',
+            'x-rpc-app_version': mhyVersion,
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
+            'x-rpc-client_type': client_type,
+            'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Language': 'zh-CN,en-US;q=0.8',
+            'X-Requested-With': 'com.mihoyo.hyperion',
+            "Cookie": Cookie_get()
+        }
+    )
+    return (req.text)
+
 
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
@@ -72,7 +70,7 @@ def JsonAnalysis(JsonText):
         )
     else:
         pass
-    Character_Info = "人物："
+    Character_Info = "人物：\n\t"
     Character_List = []
     Character_List = data["data"]["avatars"]
     for i in Character_List:
@@ -95,75 +93,77 @@ def JsonAnalysis(JsonText):
         if (i["name"] == "旅行者"):
             if (i["image"].find("UI_AvatarIcon_PlayerGirl") != -1):
                 TempText = (
-                    i["name"]+ "[萤——妹妹]" + 
+                    i["name"]+ "[荧]" + 
                     "（" + str(i["level"]) + "级，" 
-                    + Character_Type + "）"
+                    + Character_Type + "）\n\t"
                 )
             elif (i["image"].find("UI_AvatarIcon_PlayerBoy") != -1):
                 TempText = (
-                    i["name"]+ "[空——哥哥]" + 
+                    i["name"]+ "[空]" + 
                     "（" + str(i["level"]) + "级，" 
-                    + Character_Type + "）"
+                    + Character_Type + "）\n\t"
                 )
             else:
                 TempText = (
                     i["name"]+ "[性别判断失败]" + 
                     "（" + str(i["level"]) + "级，" 
-                    + Character_Type + "）"
+                    + Character_Type + "）\n\t"
                 )
         else:
             TempText = (
                 i["name"] + 
                 "（" + str(i["level"]) + "级，" 
-                + "好感度为" + str(i["fetter"]) + "级，" 
-                + str(i["rarity"]) + "★角色，"
-                + Character_Type + "）"
+                + str(i["actived_constellation_num"]) + "命，"
+                + "好感度" + str(i["fetter"]) + "，" 
+                + str(i["rarity"]) + "★，"
+                + Character_Type + "）\n\t"
             )
         Character_Info = Character_Info + TempText
     Account_Info = (
-        "活跃天数：" + str(data["data"]["stats"]["active_day_number"]) +
-        "，一共达成了" + str(data["data"]["stats"]["achievement_number"]) +
-        "个成就，风神瞳收集了" + str(data["data"]["stats"]["anemoculus_number"]) +
-        "个，岩神瞳收集了" + str(data["data"]["stats"]["geoculus_number"]) +
-        "个，目前获得了" + str(data["data"]["stats"]["avatar_number"]) +
-        "个角色，解锁了" + str(data["data"]["stats"]["way_point_number"]) +
-        "个传送点和" + str(data["data"]["stats"]["domain_number"]) +
-        "个秘境，深境螺旋当期目前"
+        "账号信息：\n\t活跃天数：" + str(data["data"]["stats"]["active_day_number"]) +
+        "\n\t达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) +
+        "个\n\t风神瞳收集数量：" + str(data["data"]["stats"]["anemoculus_number"]) +
+        "个\n\t岩神瞳收集数量：" + str(data["data"]["stats"]["geoculus_number"]) +
+        "个\n\t获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) +
+        "个\n\t解锁传送点：" + str(data["data"]["stats"]["way_point_number"]) +
+        "个；解锁秘境：" + str(data["data"]["stats"]["domain_number"]) +
+        "\n\t深境螺旋当期进度："
     )
     if (data["data"]["stats"]["spiral_abyss"] == "-"):
-        Account_Info = Account_Info + "没打"
+        Account_Info = Account_Info + "没打\n"
     else:
-        Account_Info = Account_Info + "打到了" + data["data"]["stats"]["spiral_abyss"]
+        Account_Info = Account_Info + data["data"]["stats"]["spiral_abyss"] + "\n"
     Account_Info = Account_Info + (
-        "，一共开启了" + str(data["data"]["stats"]["common_chest_number"]) +
-        "个普通宝箱，" + str(data["data"]["stats"]["exquisite_chest_number"]) +
-        "个精致宝箱，" + str(data["data"]["stats"]["precious_chest_number"]) +
-        "个珍贵宝箱，" + str(data["data"]["stats"]["luxurious_chest_number"]) +
-        "个华丽宝箱"
+        "\n开启宝箱计数：\n\t" + "普通宝箱：" + str(data["data"]["stats"]["common_chest_number"]) +
+        "个\n\t精致宝箱：" + str(data["data"]["stats"]["exquisite_chest_number"]) +
+        "个\n\t珍贵宝箱：" + str(data["data"]["stats"]["precious_chest_number"]) +
+        "个\n\t华丽宝箱：" + str(data["data"]["stats"]["luxurious_chest_number"]) +
+        "个\n"
     )
     Area_list = []
     Area_list = data["data"]["world_explorations"]
-    Prestige_Info = "声望信息："
-    ExtraArea_Info = "特殊地区信息："
+    Prestige_Info = "声望信息：\n"
+    ExtraArea_Info = "特殊地区信息：\n"
     for i in Area_list:
         if (i["type"] == "Reputation"):
-            Prestige_Info = (Prestige_Info + i["name"] +
-            "的探索进度为" + str(i["exploration_percentage"] / 10) +
-            "%，声望等级为：" + str(i["level"]) + "级|")
+            Prestige_Info = (Prestige_Info + "\t" + i["name"] +
+            "，探索进度：" + str(i["exploration_percentage"] / 10) +
+            "%，声望等级：" + str(i["level"]) + "级\n")
         else:
-            ExtraArea_Info = (ExtraArea_Info + i["name"] +
-            "的探索进度为" + str(i["exploration_percentage"] / 10) +
-            "%，区域等级为：" + str(i["level"]) + "级|")
-    Home_Info = "家园信息："
+            ExtraArea_Info = (ExtraArea_Info + "\t" + i["name"] +
+            "，探索进度：" + str(i["exploration_percentage"] / 10) +
+            "%，区域等级：" + str(i["level"]) + "级\n")
+    Home_Info = "家园信息：\n"
     Home_List = []
     Home_List = data["data"]["homes"]
     for i in Home_List:
         Home_Info = (Home_Info + i["name"] +
         "区域已获得摆件数量为" + str(i["item_num"]) +
-        ",最高洞天仙力为" + str(i["comfort_num"]) +
+        "\n\t最高洞天仙力为" + str(i["comfort_num"]) +
         "（" + i["comfort_level_name"] +
-        "）,最高历史访客为" + str(i["visit_num"]) +
-        "，信任等级为：" + str(i["level"]) + "级")
+        "）\n\t最高历史访客为" + str(i["visit_num"]) +
+        "\n\t信任等级为：" + str(i["level"]) + "级\n")
+
     return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
 
 if __name__ == "__main__":
@@ -172,7 +172,7 @@ if __name__ == "__main__":
         try:
             uid = str(int(uid))
         except:
-            if (uid == "exit"):
+            if (uid == "exit" or uid == "q"):
                 sys.exit(0)
             print("输入有误！")
             continue
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             print("正在查询UID" + uid + "的原神信息")
             if (uid[0] == "1"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
-                print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo)
+                print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo + "\n以上为UID：" + str(uid) + "的查询结果\n")
             elif (uid[0] == "5"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
                 print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
