@@ -188,27 +188,32 @@ def JsonAnalysis(JsonText):
 
     return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
 
-if __name__ == "__main__":
-    while True:
-        uid = input("请输入要查询的UID(目前仅支持国内服务器，退出请输入exit)：")
-        try:
-            uid = str(int(uid))
-        except:
-            if (uid == "exit" or uid == "q"):
-                sys.exit(0)
-            print("输入有误！")
-            continue
-        if (len(uid) == 9):
-            print("正在查询UID" + uid + "的原神信息")
-            if (uid[0] == "1"):
-                UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
-                print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo + "\n以上为UID：" + str(uid) + "的查询结果\n")
-            elif (uid[0] == "5"):
-                UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
-                print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
-            else:
-                print("UID输入有误！！\r\n请检查UID是否为国服UID！")
+def infoQuery(uid):
+    try:
+        uid = str(int(uid))
+    except:
+        if (uid == "exit" or uid == "q"):
+            sys.exit(0)
+        print("输入有误！")
+    if (len(uid) == 9):
+        print("正在查询UID" + uid + "的原神信息")
+        if (uid[0] == "1"):
+            UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
+            print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo + "\n以上为UID：" + str(uid) + "的查询结果\n")
+        elif (uid[0] == "5"):
+            UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
+            print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
         else:
-            print("UID长度有误！！\r\n请检查输入的UID是否为9位数！")
-    pass
-pass
+            print("UID输入有误！！\r\n请检查UID是否为国服UID！")
+    else:
+        print("UID长度有误！！\r\n请检查输入的UID是否为9位数！")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) >= 2:
+        infoQuery(sys.argv[-1])
+    else:
+        while True:
+            uid = input("请输入要查询的UID(目前仅支持国内服务器，退出请输入exit)：")
+            infoQuery(uid)
+        
