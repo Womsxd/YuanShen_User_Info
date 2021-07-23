@@ -7,7 +7,17 @@ This API can only query Chinese servers！！！
 
 希望米哈游官方人员看到了也别和谐(
 
-#  获取Cookie方法
+# 用法
+
+在settings.py中填写自己的cookie后：
+
+​	直接运行`ys_UserInfoGet.py`
+
+​	或者运行：
+
+​	`ys_UserInfoGet.py [uid1] [uid2] [uid3] ……`
+
+##  获取Cookie方法
 
 
 1. 浏览器**无痕模式**打开 [https://bbs.mihoyo.com/ys/](https://bbs.mihoyo.com/ys/) ，登录账号

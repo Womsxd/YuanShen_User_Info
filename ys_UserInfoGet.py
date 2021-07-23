@@ -194,7 +194,8 @@ def infoQuery(uid):
     except:
         if (uid == "exit" or uid == "q"):
             sys.exit(0)
-        print("输入有误！")
+        else:
+            print("输入有误！")
     if (len(uid) == 9):
         print("正在查询UID" + uid + "的原神信息")
         if (uid[0] == "1"):
@@ -210,10 +211,16 @@ def infoQuery(uid):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) >= 2:
-        infoQuery(sys.argv[-1])
+    if len(sys.argv) > 1:
+        for i in range(1, len(sys.argv)):
+            infoQuery(sys.argv[i])
+            if i + 1 < len(sys.argv):
+                sleepSec = random.randint(1,4)
+                print("为避免查询过于频繁，开始第" + str(i + 1) + "次查询之前等待" + str(sleepSec) + "秒……")
+                time.sleep(sleepSec)
+        quit()
     else:
         while True:
-            uid = input("请输入要查询的UID(目前仅支持国内服务器，退出请输入exit)：")
+            uid = input("请输入要查询的UID(目前仅支持国内服务器，退出请输入exit或q)：")
             infoQuery(uid)
         
