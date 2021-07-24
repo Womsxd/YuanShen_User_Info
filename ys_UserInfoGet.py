@@ -209,18 +209,25 @@ def infoQuery(uid):
     else:
         print("UID长度有误！！\r\n请检查输入的UID是否为9位数！")
 
+def sleep(maxSecond, queryOrder):
+    sleepSec = random.randint(1,maxSecond)
+    print("为避免查询过于频繁，开始第" + str(queryOrder) + "次查询之前等待" + str(sleepSec) + "秒……")
+    time.sleep(sleepSec)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         for i in range(1, len(sys.argv)):
             infoQuery(sys.argv[i])
             if i + 1 < len(sys.argv):
-                sleepSec = random.randint(1,4)
-                print("为避免查询过于频繁，开始第" + str(i + 1) + "次查询之前等待" + str(sleepSec) + "秒……")
-                time.sleep(sleepSec)
+                sleep(4, i + 1) # sleep(最长等待时间, 即将执行的是第几次查询)
         quit()
     else:
         while True:
-            uid = input("请输入要查询的UID(目前仅支持国内服务器，退出请输入exit或q)：")
-            infoQuery(uid)
-        
+            uid = input("请输入要查询的国服UID(多个UID请使用空格分隔，退出输入exit或q)：")
+            uidList = uid.split(' ')
+            i = 1
+            for uid in uidList:
+                infoQuery(uid)
+                i += 1
+                if i <= len(uidList):
+                    sleep(4, i)
