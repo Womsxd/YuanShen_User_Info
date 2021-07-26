@@ -145,6 +145,7 @@ def JsonAnalysis(JsonText):
         "\n\t达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) +
         "个\n\t风神瞳收集数量：" + str(data["data"]["stats"]["anemoculus_number"]) +
         "个\n\t岩神瞳收集数量：" + str(data["data"]["stats"]["geoculus_number"]) +
+        "个\n\t雷神瞳收集数量：" + str(data["data"]["stats"]["electroculus_number"]) +
         "个\n\t获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) +
         "个\n\t解锁传送点：" + str(data["data"]["stats"]["way_point_number"]) +
         "个；解锁秘境：" + str(data["data"]["stats"]["domain_number"]) +
@@ -167,13 +168,32 @@ def JsonAnalysis(JsonText):
     ExtraArea_Info = "特殊地区信息：\n"
     for i in Area_list:
         if (i["type"] == "Reputation"):
-            Prestige_Info = (Prestige_Info + "\t" + i["name"] +
-            "，探索进度：" + str(i["exploration_percentage"] / 10) +
-            "%，声望等级：" + str(i["level"]) + "级\n")
+            tempText = ""
+            if len(i["offerings"]) >= 1:
+                for i2 in i["offerings"]:
+                    tempText = "{}，{}等级：{}级".format(
+                        tempText,
+                        i2["name"],
+                        i2["level"])
+            Prestige_Info = "{}\t{}，探索进度：{}%，声望等级：{}级{}\n".format(
+                Prestige_Info,
+                i["name"],
+                str(i["exploration_percentage"] / 10),
+                str(i["level"]),
+                tempText)
         else:
-            ExtraArea_Info = (ExtraArea_Info + "\t" + i["name"] +
-            "，探索进度：" + str(i["exploration_percentage"] / 10) +
-            "%，区域等级：" + str(i["level"]) + "级\n")
+            tempText = ""
+            if len(i["offerings"]) >= 1:
+                for i2 in i["offerings"]:
+                    tempText = "{}，{}等级：{}级".format(
+                        tempText,
+                        i2["name"],
+                        i2["level"])
+            ExtraArea_Info = "{}\t{}，探索进度：{}%{}\n".format(
+                ExtraArea_Info,
+                i["name"],
+                str(i["exploration_percentage"] / 10),
+                tempText)
     Home_Info = "家园信息：\n已开启区域："
     Home_List = []
     Home_List = data["data"]["homes"]
@@ -203,6 +223,7 @@ if __name__ == "__main__":
             if (uid[0] == "1"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_gf01"))
                 print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo + "\n以上为UID：" + str(uid) + "的查询结果\n")
+                #print(GetInfo(uid ,"cn_gf01"))
             elif (uid[0] == "5"):
                 UidInfo = JsonAnalysis(GetInfo(uid ,"cn_qd01"))
                 print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
