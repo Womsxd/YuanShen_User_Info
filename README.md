@@ -11,8 +11,9 @@ This API can only query Chinese servers！！！
 
 
 1. 浏览器**无痕模式**打开 [https://bbs.mihoyo.com/ys/](https://bbs.mihoyo.com/ys/) ，登录账号
-2. 按`F12`，打开`开发者工具`，找到并点击`Network`
-3. 按`F5`刷新页面，按下图复制 Cookie：
+2. 打开[https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie](https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie)，（这个在这里获取Cookie并不会触发`Debugger`，当然也可以忽略这个步骤）
+3. 按`F12`，打开`开发者工具`，找到并点击`Network`
+4. 按`F5`刷新页面，按下图复制 Cookie：
 
 ![How to get mys cookie](https://i.loli.net/2020/10/28/TMKC6lsnk4w5A8i.png)
 
