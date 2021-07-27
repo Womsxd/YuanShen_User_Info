@@ -191,7 +191,7 @@ def JsonAnalysis(JsonText):
     homeworld_list = []
     for i in Home_List:
         homeworld_list.append(i["name"])
-    Home_Info += '、'.join(homeworld_list)
+    Home_Info += '、'.join(homeworld_list) + "\n\t"
     Home_Info += spaceWrap("最高洞天仙力：", 16) + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0][
         "comfort_level_name"] + '）\n\t'
     Home_Info += "已获得摆件数量：" + str(Home_List[0]["item_num"]) + "\n\t"
