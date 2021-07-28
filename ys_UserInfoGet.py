@@ -151,7 +151,6 @@ def JsonAnalysis(JsonText):
                     + Character_Type + "）\n\t"
             )
         Character_Info = Character_Info + TempText
-
     Account_Info = "账号信息：\n\t"
     Account_Info += "活跃天数：　　" + str(data["data"]["stats"]["active_day_number"]) + "\n\t"
     Account_Info += "达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) + "个\n\t"
