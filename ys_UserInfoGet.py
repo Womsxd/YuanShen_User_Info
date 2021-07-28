@@ -75,6 +75,27 @@ def spaceWrap(text, flex=10):
 
     return '%s' % (str(text)) + '%s' % (' ' * int((int(flex) - stringlength)))
 
+def elementDict(text, isOculus=False):
+    elementProperty = str(re.sub(r'culus_number$', '', text)).lower()
+    elementMastery = {
+        "anemo": "风",
+        "pyro": "火",
+        "geo": "岩",
+        "electro": "雷",
+        "cryo": "冰",
+        "hydro": "水",
+        "dendro": "草",  # https://genshin-impact.fandom.com/wiki/Dendro
+        "none": "无",
+    }
+    try:
+        elementProperty = str(elementMastery[elementProperty])
+    except KeyError:
+        elementProperty = "草"
+    if isOculus:
+        return elementProperty + "神瞳"
+    elif not isOculus:
+        return elementProperty + "属性"
+
 def JsonAnalysis(JsonText):
     data = json.loads(JsonText)
     if ( data["retcode"] != 0):
@@ -95,22 +116,7 @@ def JsonAnalysis(JsonText):
         name_length.append(calcStringLength(i["name"]))
     namelength_max = int(max(name_length))
     for i in Character_List:
-        if (i["element"] == "None"):
-            Character_Type = "无属性"
-        elif (i["element"] == "Anemo"):
-            Character_Type = "风属性"
-        elif (i["element"] == "Pyro"):
-            Character_Type = "火属性"
-        elif (i["element"] == "Geo"):
-            Character_Type = "岩属性"
-        elif (i["element"] == "Electro"):
-            Character_Type = "雷属性"
-        elif (i["element"] == "Cryo"):
-            Character_Type = "冰属性"
-        elif (i["element"] == "Hydro"):
-            Character_Type = "水属性"
-        else:
-            Character_Type = "草属性"
+        Character_Type = elementDict(i["element"], isOculus=False)
         if (i["name"] == "旅行者"):
             if (i["image"].find("UI_AvatarIcon_PlayerGirl") != -1):
                 TempText = (
@@ -140,17 +146,22 @@ def JsonAnalysis(JsonText):
                 + Character_Type + "）\n\t"
             )
         Character_Info = Character_Info + TempText
-    Account_Info = (
-        "账号信息：\n\t活跃天数：" + str(data["data"]["stats"]["active_day_number"]) +
-        "\n\t达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) +
-        "个\n\t风神瞳收集数量：" + str(data["data"]["stats"]["anemoculus_number"]) +
-        "个\n\t岩神瞳收集数量：" + str(data["data"]["stats"]["geoculus_number"]) +
-        "个\n\t雷神瞳收集数量：" + str(data["data"]["stats"]["electroculus_number"]) +
-        "个\n\t获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) +
-        "个\n\t解锁传送点：" + str(data["data"]["stats"]["way_point_number"]) +
-        "个；解锁秘境：" + str(data["data"]["stats"]["domain_number"]) +
-        "\n\t深境螺旋当期进度："
-    )
+    Account_Info = "账号信息：\n\t"
+    Account_Info += "活跃天数：　　" + str(data["data"]["stats"]["active_day_number"]) + "\n\t"
+    Account_Info += "达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) + "个\n\t"
+    for key in data["data"]["stats"]:
+        if re.search(r'culus_number$', key) is not None:
+            Account_Info = "{}{}已收集：{}个\n\t".format(
+                Account_Info,
+                elementDict(str(key), isOculus=True),  # 判断神瞳属性
+                str(data["data"]["stats"][key])
+            )
+        else:
+            pass
+    Account_Info += "获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) + "个\n\t"
+    Account_Info += "传送点已解锁：" + str(data["data"]["stats"]["way_point_number"]) + "个\n\t"
+    Account_Info += "秘境解锁数量：" + str(data["data"]["stats"]["domain_number"]) + "个\n\t"
+    Account_Info += "螺旋当期当期进度："
     if (data["data"]["stats"]["spiral_abyss"] == "-"):
         Account_Info = Account_Info + "没打\n"
     else:
