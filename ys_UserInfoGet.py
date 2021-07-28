@@ -89,7 +89,7 @@ def elementDict(text, isOculus=False):
         "electro": "雷",
         "cryo": "冰",
         "hydro": "水",
-        "herbo": "草",  # 我猜的，herba → herbo
+        "dendro": "草",  # https://genshin-impact.fandom.com/wiki/Dendro
         "none": "无",
     }
     try:
