@@ -1,6 +1,6 @@
 #coding:utf-8
 
-mhyVersion = "2.7.0"
-salt = "14bmu1mz0yuljprsfgpvjh3ju2ni468r"
+mhyVersion = "2.9.0"
+salt = "w5k9n3aqhoaovgw25l373ee18nsazydo" # Github-@Azure99
 client_type = "5"
 cache_Cookie = ""
