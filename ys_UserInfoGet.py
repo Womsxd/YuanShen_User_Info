@@ -41,7 +41,6 @@ def Cookie_get():
 
 
 def GetInfo(Uid, ServerID):
-    # 原本的try……except没有意义并且会掩盖错误信息，删除
     req = requests.get(
         url="https://api-takumi.mihoyo.com/game_record/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
         headers={
@@ -158,7 +157,11 @@ def JsonAnalysis(JsonText):
     Account_Info += "达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) + "个\n\t"
     for key in data["data"]["stats"]:
         if re.search(r'culus_number$', key) is not None:
-            Account_Info += elementDict(str(key), isOculus=True) + "已收集：" + str(data["data"]["stats"][key]) + "个\n\t"
+            Account_Info = "{}{}已收集：{}个\n\t".format(
+                Account_Info,
+                elementDict(str(key), isOculus=True),  # 判断神瞳属性
+                str(data["data"]["stats"][key])
+            )
         else:
             pass
     Account_Info += "获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) + "个\n\t"
@@ -193,13 +196,26 @@ def JsonAnalysis(JsonText):
     # 排版结束
 
     for i in Area_list:
-        if i["type"] != "Offering":
-            Prestige_Info = (Prestige_Info + "\t" + spaceWrap(i["name"] + " ", prestige_info_length_max) + "探索进度：" + spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4) + "%，声望等级：" + spaceWrap(str(i["level"]), 2) + "级\n")
+        if (i["type"] == "Reputation"):
+            Prestige_Info = "{}\t{}探索进度：{}%，声望等级：{}级\n".format(
+                Prestige_Info,
+                spaceWrap(i["name"] + " ", prestige_info_length_max),  # 以最长的地名为准，自动补足空格
+                spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4),  # 以xx.x%长度为准，自动补足空格
+                spaceWrap(str(i["level"]), 2)
+            )
         else:
-            Prestige_Info = (Prestige_Info + "\t" + spaceWrap(i["name"] + " ", prestige_info_length_max) + "探索进度：" + spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4) + "%\n")
+            Prestige_Info = "{}\t{}探索进度：{}%\n".format(
+                Prestige_Info,
+                spaceWrap(i["name"] + " ", prestige_info_length_max),  # 以最长的地名为准，自动补足空格
+                spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4)  # 以xx.x%长度为准，自动补足空格
+            )
         if len(i["offerings"]) != 0:
-            ExtraArea_Info = (ExtraArea_Info + "\t" + spaceWrap(str(i["offerings"][0]["name"] + " "), extra_area_info_length_max) +
-                              "供奉等级：" + spaceWrap(str(i["offerings"][0]["level"]), 2) + "级，位置：" + str(i["name"]) + '\n')
+            ExtraArea_Info = "{}\t{}供奉等级：{}级，位置：{}\n".format(
+                ExtraArea_Info,
+                spaceWrap(str(i["offerings"][0]["name"] + " "), extra_area_info_length_max),
+                spaceWrap(str(i["offerings"][0]["level"]), 2),
+                str(i["name"])
+            )
     Home_Info = "家园信息：\n\t" + spaceWrap("已开启区域：", 16)
     Home_List = data["data"]["homes"]
     homeworld_list = []
