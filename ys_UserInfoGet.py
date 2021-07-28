@@ -59,10 +59,6 @@ def GetInfo(Uid, ServerID):
         }
     )
     return req.text
-    # test json
-    # with open('/Users/mark_chen/Documents/GitHub.nosync/YuanShen_User_Info/userinfo.json', 'r') as f:
-    #     req = f.read()
-    # return req
 
 
 def calcStringLength(text):
@@ -181,7 +177,7 @@ def JsonAnalysis(JsonText):
             "华丽宝箱：" + str(data["data"]["stats"]["luxurious_chest_number"]) + "个\n"
     )
     Area_list = data["data"]["world_explorations"]
-    Prestige_Info = "声望信息：\n"
+    Prestige_Info = "区域信息：\n"
     ExtraArea_Info = "供奉信息：\n"
 
     # 排版开始
@@ -197,9 +193,10 @@ def JsonAnalysis(JsonText):
     # 排版结束
 
     for i in Area_list:
-        Prestige_Info = (Prestige_Info + "\t" + spaceWrap(i["name"] + " ", prestige_info_length_max) +
-                         "探索进度：" + spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4) +
-                         "%，声望等级：" + spaceWrap(str(i["level"]), 2) + "级\n")
+        if i["type"] != "Offering":
+            Prestige_Info = (Prestige_Info + "\t" + spaceWrap(i["name"] + " ", prestige_info_length_max) + "探索进度：" + spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4) + "%，声望等级：" + spaceWrap(str(i["level"]), 2) + "级\n")
+        else:
+            Prestige_Info = (Prestige_Info + "\t" + spaceWrap(i["name"] + " ", prestige_info_length_max) + "探索进度：" + spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4) + "%\n")
         if len(i["offerings"]) != 0:
             ExtraArea_Info = (ExtraArea_Info + "\t" + spaceWrap(str(i["offerings"][0]["name"] + " "), extra_area_info_length_max) +
                               "供奉等级：" + spaceWrap(str(i["offerings"][0]["level"]), 2) + "级，位置：" + str(i["name"]) + '\n')
