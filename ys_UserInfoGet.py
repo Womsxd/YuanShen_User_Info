@@ -111,6 +111,11 @@ def JsonAnalysis(JsonText):
     Character_Info = "人物：\n\t"
     Character_List = []
     name_length = []
+    star_List = {
+        5:0,
+        4:0
+    }
+    character_statistical = "人物统计：\n\t"
     Character_List = data["data"]["avatars"]
     for i in Character_List:
         name_length.append(calcStringLength(i["name"]))
@@ -145,7 +150,9 @@ def JsonAnalysis(JsonText):
                 + str(i["rarity"]) + "★，"
                 + Character_Type + "）\n\t"
             )
+            star_List[i["rarity"]] = star_List[i["rarity"]] + 1
         Character_Info = Character_Info + TempText
+    character_statistical += f"一共有{len(Character_List)}个角色，其中有{star_List[5]}个五星，{star_List[4]}个四星\n\t"
     Account_Info = "账号信息：\n\t"
     Account_Info += "活跃天数：　　" + str(data["data"]["stats"]["active_day_number"]) + "\n\t"
     Account_Info += "达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) + "个\n\t"
@@ -217,7 +224,13 @@ def JsonAnalysis(JsonText):
     Home_Info += "\n\t信任等级为" + str(Home_List[0]["level"]) + '级'
     Home_Info += "\n\t最高历史访客数" + str(Home_List[0]["visit_num"])
 
-    return (Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
+    return (
+        Character_Info + "\r\n" + 
+        character_statistical + "\r\n" + 
+        Account_Info + "\r\n" + 
+        Prestige_Info + "\r\n" + 
+        ExtraArea_Info + "\r\n" + 
+        Home_Info)
 
 if __name__ == "__main__":
     while True:
