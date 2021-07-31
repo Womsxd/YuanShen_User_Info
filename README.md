@@ -26,6 +26,7 @@ This API can only query Chinese servers！！！
 4. 按`F5`刷新页面，按下图复制 Cookie：
 
 ![How to get mys cookie](https://i.loli.net/2020/10/28/TMKC6lsnk4w5A8i.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FWomsxd%2FYuanShen_User_Info.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FWomsxd%2FYuanShen_User_Info?ref=badge_shield)
 
 当触发`Debugger`时，可尝试按`Ctrl + F8`关闭，然后再次刷新页面，最后复制 Cookie。也可以使用另一种方法：
 
@@ -39,3 +40,7 @@ This API can only query Chinese servers！！！
 # 感谢列表：
 
 [Steesha](https://github.com/Steesha)：帮忙拿到了DS的算法
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FWomsxd%2FYuanShen_User_Info.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FWomsxd%2FYuanShen_User_Info?ref=badge_large)
