@@ -168,7 +168,7 @@ def JsonAnalysis(JsonText):
     Account_Info += "获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) + "个\n\t"
     Account_Info += "传送点已解锁：" + str(data["data"]["stats"]["way_point_number"]) + "个\n\t"
     Account_Info += "秘境解锁数量：" + str(data["data"]["stats"]["domain_number"]) + "个\n\t"
-    Account_Info += "螺旋当期当期进度："
+    Account_Info += "螺旋当期进度："
     if (data["data"]["stats"]["spiral_abyss"] == "-"):
         Account_Info = Account_Info + "没打\n"
     else:
