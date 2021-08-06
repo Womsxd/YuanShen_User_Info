@@ -212,17 +212,20 @@ def JsonAnalysis(JsonText):
                 i["name"],
                 str(i["exploration_percentage"] / 10),
                 tempText)
-    Home_Info = "家园信息：\n已开启区域："
-    Home_List = []
-    Home_List = data["data"]["homes"]
-    homeworld_list = []
-    for i in Home_List:
-        homeworld_list.append(i["name"])
-    Home_Info += '、'.join(homeworld_list)
-    Home_Info += "\n\t最高洞天仙力为" + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0]["comfort_level_name"] + '）'
-    Home_Info += "\n\t已获得摆件数量" + str(Home_List[0]["item_num"])
-    Home_Info += "\n\t信任等级为" + str(Home_List[0]["level"]) + '级'
-    Home_Info += "\n\t最高历史访客数" + str(Home_List[0]["visit_num"])
+    if len(data["data"]["homes"]) > 0:
+        Home_Info = "家园信息：\n已开启区域："
+        Home_List = []
+        Home_List = data["data"]["homes"]
+        homeworld_list = []
+        for i in Home_List:
+            homeworld_list.append(i["name"])
+        Home_Info += '、'.join(homeworld_list)
+        Home_Info += "\n\t最高洞天仙力为" + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0]["comfort_level_name"] + '）'
+        Home_Info += "\n\t已获得摆件数量" + str(Home_List[0]["item_num"])
+        Home_Info += "\n\t信任等级为" + str(Home_List[0]["level"]) + '级'
+        Home_Info += "\n\t最高历史访客数" + str(Home_List[0]["visit_num"])
+    else:
+        Home_Info = "家园信息：\n\t" + spaceWrap("家园暂未开启！", 16)
 
     return (
         Character_Info + "\r\n" + 
