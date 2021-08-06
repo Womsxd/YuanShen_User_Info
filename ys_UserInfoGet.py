@@ -215,17 +215,20 @@ def JsonAnalysis(JsonText):
                 spaceWrap(str(i["offerings"][0]["level"]), 2),
                 str(i["name"])
             )
-    Home_Info = "家园信息：\n\t" + spaceWrap("已开启区域：", 16)
-    Home_List = data["data"]["homes"]
-    homeworld_list = []
-    for i in Home_List:
-        homeworld_list.append(i["name"])
-    Home_Info += '、'.join(homeworld_list) + "\n\t"
-    Home_Info += spaceWrap("最高洞天仙力：", 16) + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0][
-        "comfort_level_name"] + '）\n\t'
-    Home_Info += "已获得摆件数量：" + str(Home_List[0]["item_num"]) + "\n\t"
-    Home_Info += spaceWrap("最大信任等级：", 16) + str(Home_List[0]["level"]) + '级' + "\n\t"
-    Home_Info += "最高历史访客数：" + str(Home_List[0]["visit_num"])
+    if len(data["data"]["homes"]) > 0:
+        Home_Info = "家园信息：\n\t" + spaceWrap("已开启区域：", 16)
+        Home_List = data["data"]["homes"]
+        homeworld_list = []
+        for i in Home_List:
+            homeworld_list.append(i["name"])
+        Home_Info += '、'.join(homeworld_list) + "\n\t"
+        Home_Info += spaceWrap("最高洞天仙力：", 16) + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0][
+            "comfort_level_name"] + '）\n\t'
+        Home_Info += "已获得摆件数量：" + str(Home_List[0]["item_num"]) + "\n\t"
+        Home_Info += spaceWrap("最大信任等级：", 16) + str(Home_List[0]["level"]) + '级' + "\n\t"
+        Home_Info += "最高历史访客数：" + str(Home_List[0]["visit_num"])
+    else:
+        Home_Info = "家园信息：\n\t" + spaceWrap("家园暂未开启！", 16)
 
     return (
             Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
