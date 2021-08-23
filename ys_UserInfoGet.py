@@ -225,7 +225,7 @@ def JsonAnalysis(JsonText):
         Home_Info += "\n\t信任等级为" + str(Home_List[0]["level"]) + '级'
         Home_Info += "\n\t最高历史访客数" + str(Home_List[0]["visit_num"])
     else:
-        Home_Info = "家园信息：\n\t" + spaceWrap("家园暂未开启！", 16)
+        Home_Info = "家园信息：\n\t" + "家园暂未开启！"
 
     return (
         Character_Info + "\r\n" + 
