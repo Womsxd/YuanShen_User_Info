@@ -1,5 +1,4 @@
 # https://github.com/Womsxd/YuanShen_User_Info
-import http.cookies
 import os
 import re
 import sys
