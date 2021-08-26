@@ -1,4 +1,5 @@
 # https://github.com/Womsxd/YuanShen_User_Info
+import http.cookies
 import os
 import re
 import sys
@@ -8,6 +9,7 @@ import string
 import random
 import hashlib
 import requests
+from http import cookiejar
 
 from settings import *
 
@@ -26,18 +28,10 @@ def DSGet():
     return i + "," + r + "," + c
 
 
-def Cookie_get():
-    global cache_Cookie
-    if cache_Cookie == "":
-        r = open("cookie.txt", mode='r+')
-        tmp_Cookie = r.read()
-        if tmp_Cookie == "":
-            tmp_Cookie = input("请输入Cookie:")
-            r.write(tmp_Cookie)
-            r.flush()
-            r.close()
-        cache_Cookie = tmp_Cookie
-    return cache_Cookie
+def cookie_get_from_file():
+    cookie_netscape = cookiejar.MozillaCookieJar()
+    cookie_netscape.load("cookie.txt")
+    return cookie_netscape
 
 
 def GetInfo(Uid, ServerID):
@@ -53,9 +47,9 @@ def GetInfo(Uid, ServerID):
             'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
             'Accept-Encoding': 'gzip, deflate',
             'Accept-Language': 'zh-CN,en-US;q=0.8',
-            'X-Requested-With': 'com.mihoyo.hyperion',
-            "Cookie": Cookie_get()
-        }
+            'X-Requested-With': 'com.mihoyo.hyperion'
+        },
+        cookies=cookie_get_from_file()
     )
     return req.text
 
