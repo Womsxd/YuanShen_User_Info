@@ -17,12 +17,16 @@ def md5(text):
     return (md5.hexdigest())
 
 
-def DSGet():
+def DSGet(query:str):
     n = salt
     i = str(int(time.time()))
-    r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
-    c = md5("salt=" + n + "&t="+ i + "&r=" + r)
-    return (i + "," + r + "," + c)
+    #r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
+    r = str(random.randint(100000, 200000))
+    b = ""
+    q = query
+    c = md5("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q)
+    return i + "," + r + "," + c
+
 
 def Cookie_get():
     global cache_Cookie
@@ -43,7 +47,7 @@ def GetInfo(Uid, ServerID):
         url = "https://api-takumi.mihoyo.com/game_record/genshin/api/index?server="+ ServerID +"&role_id=" + Uid ,
         headers = {
             'Accept': 'application/json, text/plain, */*',
-            'DS': DSGet(),
+            'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
             'Origin': 'https://webstatic.mihoyo.com',
             'x-rpc-app_version': mhyVersion,
             'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
