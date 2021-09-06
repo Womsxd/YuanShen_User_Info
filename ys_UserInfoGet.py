@@ -35,7 +35,7 @@ b=body q=query
 def DSGet(query:str):
     n = salt
     i = str(int(time.time()))
-    r = str(random.randint(100000, 200000))
+    r = str(random.randint(100001, 200000))
     b = ""
     q = query
     c = md5("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q)
