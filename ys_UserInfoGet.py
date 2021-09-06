@@ -39,7 +39,6 @@ def DSGet(query:str):
     b = ""
     q = query
     c = md5("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q)
-    print("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q,i + "," + r + "," + c)
     return i + "," + r + "," + c
 
 
