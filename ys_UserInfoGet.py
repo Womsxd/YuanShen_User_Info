@@ -17,12 +17,29 @@ def md5(text):
     md5.update(text.encode())
     return md5.hexdigest()
 
-
-def DSGet():
+# Github-@lulu666lulu https://github.com/Azure99/GenshinPlayerQuery/issues/20
+'''
+{body:"",query:{"action_ticket": undefined, "game_biz": "hk4e_cn”}}
+对应 https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn //查询米哈游账号下绑定的游戏(game_biz可留空)
+{body:"",query:{"uid": 12345(被查询账号米哈游uid)}}
+对应 https://api-takumi.mihoyo.com/game_record/app/card/wapi/getGameRecordCard?uid=
+{body:"",query:{'role_id': '查询账号的uid(游戏里的)' ,'server': '游戏服务器'}}
+对应 https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server= server信息 &role_id= 游戏uid
+{body:"",query:{'role_id': '查询账号的uid(游戏里的)' , 'schedule_type': 1(我这边只看到出现过1和2), 'server': 'cn_gf01'}}
+对应 https://api-takumi.mihoyo.com/game_record/app/genshin/api/spiralAbyss?schedule_type=1&server= server信息 &role_id= 游戏uid
+{body:"",query:{game_id: 2(目前我知道有崩坏3是1原神是2)}}
+对应 https://api-takumi.mihoyo.com/game_record/app/card/wapi/getAnnouncement?game_id=    这个是公告api
+b=body q=query
+其中b只在post的时候有内容，q只在get的时候有内容
+'''
+def DSGet(query:str):
     n = salt
     i = str(int(time.time()))
-    r = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
-    c = md5("salt=" + n + "&t=" + i + "&r=" + r)
+    r = str(random.randint(100000, 200000))
+    b = ""
+    q = query
+    c = md5("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q)
+    print("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q,i + "," + r + "," + c)
     return i + "," + r + "," + c
 
 
@@ -42,10 +59,10 @@ def Cookie_get():
 
 def GetInfo(Uid, ServerID):
     req = requests.get(
-        url="https://api-takumi.mihoyo.com/game_record/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
+        url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
         headers={
             'Accept': 'application/json, text/plain, */*',
-            'DS': DSGet(),
+            'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
             'Origin': 'https://webstatic.mihoyo.com',
             'x-rpc-app_version': mhyVersion,
             'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
