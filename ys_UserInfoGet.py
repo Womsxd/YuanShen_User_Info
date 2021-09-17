@@ -260,7 +260,7 @@ def infoQuery(uid):
             print("输入有误！")
     if len(uid) == 9:
         print("正在查询UID" + uid + "的原神信息")
-        if uid[0] == "1":
+        if uid[0] == "1" or uid[0] == "2":
             UidInfo = JsonAnalysis(GetInfo(uid, "cn_gf01"))
             print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo + "\n以上为UID：" + str(uid) + "的查询结果\n")
         elif uid[0] == "5":
