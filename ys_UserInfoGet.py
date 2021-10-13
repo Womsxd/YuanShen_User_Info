@@ -163,7 +163,7 @@ def JsonAnalysis(JsonText):
                     "（" + spaceWrap(str(i["level"]), 2) + "级，"
                     + str(i["actived_constellation_num"]) + "命，"
                     + spaceWrap(str(i["fetter"]), 2) + "好感度，"
-                    + str(i["rarity"]) + "★，"
+                    + re.sub('^105$','5',str(i["rarity"])) + "★，"
                     + Character_Type + "）\n\t"
             )
         Character_Info = Character_Info + TempText
