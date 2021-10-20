@@ -76,6 +76,7 @@ def GetInfo(Uid, ServerID):
     return req.text
 
 
+
 def calcStringLength(text):
     # 令len(str(string).encode()) = m, len(str(string)) = n
     # 字符串所占位置长度 = (m + n) / 2
@@ -192,7 +193,8 @@ def JsonAnalysis(JsonText):
             "普通宝箱：" + str(data["data"]["stats"]["common_chest_number"]) + "个\n\t" +
             "精致宝箱：" + str(data["data"]["stats"]["exquisite_chest_number"]) + "个\n\t" +
             "珍贵宝箱：" + str(data["data"]["stats"]["precious_chest_number"]) + "个\n\t" +
-            "华丽宝箱：" + str(data["data"]["stats"]["luxurious_chest_number"]) + "个\n"
+            "华丽宝箱：" + str(data["data"]["stats"]["luxurious_chest_number"]) + "个\n\t" + 
+            "奇馈宝箱：" + str(data["data"]["stats"]["magic_chest_number"]) + "个\n"
     )
     Area_list = data["data"]["world_explorations"]
     Prestige_Info = "区域信息：\n"
