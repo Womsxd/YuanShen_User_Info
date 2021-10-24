@@ -41,6 +41,12 @@ def DSGet(query:str):
     c = md5("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q)
     return i + "," + r + "," + c
 
+def OSDSGet():
+    n = os_salt
+    i = str(int(time.time()))
+    r = str(random.randint(100001, 200000))
+    c = md5("salt=" + n + "&t=" + i + "&r=" + r)
+    return i + "," + r + "," + c
 
 def Cookie_get():
     global cache_Cookie
@@ -56,23 +62,41 @@ def Cookie_get():
     return cache_Cookie
 
 
-def GetInfo(Uid, ServerID):
-    req = requests.get(
-        url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
-        headers={
-            'Accept': 'application/json, text/plain, */*',
-            'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
-            'Origin': 'https://webstatic.mihoyo.com',
-            'x-rpc-app_version': mhyVersion,
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
-            'x-rpc-client_type': client_type,
-            'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'zh-CN,en-US;q=0.8',
-            'X-Requested-With': 'com.mihoyo.hyperion',
-            "Cookie": Cookie_get()
-        }
-    )
+def GetInfo(Uid, ServerID, overseas=False):
+    if overseas:
+        req = requests.get(
+            url="https://api-os-takumi.mihoyo.com/game_record/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
+            headers={
+                'Accept': 'application/json, text/plain, */*',
+                'DS': OSDSGet(),
+                'Origin': 'https://webstatic.mihoyo.com',
+                'x-rpc-app_version': os_mhyVersion,
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
+                'x-rpc-client_type': os_client_type,
+                'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+                'Accept-Encoding': 'gzip, deflate',
+                'Accept-Language': 'zh-CN,en-US;q=0.8',
+                'X-Requested-With': 'com.mihoyo.hyperion',
+                "Cookie": Cookie_get()
+            }
+        )
+    else:
+        req = requests.get(
+            url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
+            headers={
+                'Accept': 'application/json, text/plain, */*',
+                'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
+                'Origin': 'https://webstatic.mihoyo.com',
+                'x-rpc-app_version': mhyVersion,
+                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
+                'x-rpc-client_type': client_type,
+                'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
+                'Accept-Encoding': 'gzip, deflate',
+                'Accept-Language': 'zh-CN,en-US;q=0.8',
+                'X-Requested-With': 'com.mihoyo.hyperion',
+                "Cookie": Cookie_get()
+            }
+        )
     return req.text
 
 
@@ -268,6 +292,15 @@ def infoQuery(uid):
         elif uid[0] == "5":
             UidInfo = JsonAnalysis(GetInfo(uid, "cn_qd01"))
             print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
+        elif uid[0] in "6789":
+            server = {
+                "6": "os_usa",
+                "7": "os_euro",
+                "8": "os_asia",
+                "9": "os_cht",
+            }[uid[0]]
+            UidInfo = JsonAnalysis(GetInfo(uid, server, overseas=True))
+            print("uid " + uid + "\r\n" + UidInfo)
         else:
             print("UID输入有误！！\r\n请检查UID是否为国服UID！")
     else:
