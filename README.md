@@ -7,7 +7,9 @@
 
 # 用法
 
-在settings.py中填写自己的cookie后：
+- 首先运行`add_cookie.py`, 根据引导添加cookie (或者直接编辑`mys_cookies.db`)
+
+- 添加cookie后：
 
 ​	直接运行`ys_UserInfoGet.py`
 

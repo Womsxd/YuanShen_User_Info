@@ -1,21 +1,11 @@
 # https://github.com/Womsxd/YuanShen_User_Info
-import os
 import re
 import sys
-import json
 import time
-import string
 import random
-import hashlib
-import requests
-
-from settings import *
-
-
-def md5(text):
-    md5 = hashlib.md5()
-    md5.update(text.encode())
-    return md5.hexdigest()
+import ys_api
+from ys_api import structs as ysstructs
+from ys_api.cookie_set import timestamp_to_text
 
 # Github-@lulu666lulu https://github.com/Azure99/GenshinPlayerQuery/issues/20
 '''
@@ -32,73 +22,6 @@ def md5(text):
 b=body q=query
 其中b只在post的时候有内容，q只在get的时候有内容
 '''
-def DSGet(query:str):
-    n = salt
-    i = str(int(time.time()))
-    r = str(random.randint(100001, 200000))
-    b = ""
-    q = query
-    c = md5("salt=" + n + "&t=" + i + "&r=" + r + "&b=" + b + "&q=" + q)
-    return i + "," + r + "," + c
-
-def OSDSGet():
-    n = os_salt
-    i = str(int(time.time()))
-    r = str(random.randint(100001, 200000))
-    c = md5("salt=" + n + "&t=" + i + "&r=" + r)
-    return i + "," + r + "," + c
-
-def Cookie_get():
-    global cache_Cookie
-    if cache_Cookie == "":
-        r = open("cookie.txt", mode='r+')
-        tmp_Cookie = r.read()
-        if tmp_Cookie == "":
-            tmp_Cookie = input("请输入Cookie:")
-            r.write(tmp_Cookie)
-            r.flush()
-            r.close()
-        cache_Cookie = tmp_Cookie
-    return cache_Cookie
-
-
-def GetInfo(Uid, ServerID, overseas=False):
-    if overseas:
-        req = requests.get(
-            url="https://api-os-takumi.mihoyo.com/game_record/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
-            headers={
-                'Accept': 'application/json, text/plain, */*',
-                'DS': OSDSGet(),
-                'Origin': 'https://webstatic.mihoyo.com',
-                'x-rpc-app_version': os_mhyVersion,
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
-                'x-rpc-client_type': os_client_type,
-                'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
-                'Accept-Encoding': 'gzip, deflate',
-                'Accept-Language': 'zh-CN,en-US;q=0.8',
-                'X-Requested-With': 'com.mihoyo.hyperion',
-                "Cookie": Cookie_get()
-            }
-        )
-    else:
-        req = requests.get(
-            url="https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server=" + ServerID + "&role_id=" + Uid,
-            headers={
-                'Accept': 'application/json, text/plain, */*',
-                'DS': DSGet("role_id=" + Uid + "&server=" + ServerID),
-                'Origin': 'https://webstatic.mihoyo.com',
-                'x-rpc-app_version': mhyVersion,
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 9; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36 miHoYoBBS/2.2.0',
-                'x-rpc-client_type': client_type,
-                'Referer': 'https://webstatic.mihoyo.com/app/community-game-records/index.html?v=6',
-                'Accept-Encoding': 'gzip, deflate',
-                'Accept-Language': 'zh-CN,en-US;q=0.8',
-                'X-Requested-With': 'com.mihoyo.hyperion',
-                "Cookie": Cookie_get()
-            }
-        )
-    return req.text
-
 
 
 def calcStringLength(text):
@@ -142,85 +65,117 @@ def elementDict(text, isOculus=False):
     elif not isOculus:
         return elementProperty + "属性"
 
+def char_id_to_name(udata: ysstructs.GenshinUserData, charid: int):  # id2name.json数据不全, 我也懒得去搜集了, 故采用此邪道方法(
+    chars = udata.avatars
+    for char in chars:
+        if charid == char.id:
+            return char.name
+    return f"{charid}"
 
-def JsonAnalysis(JsonText):
-    data = json.loads(JsonText)
-    if data["retcode"] != 0:
-        if data["retcode"] == 10001:
-            os.remove("cookie.txt")
-            return "Cookie错误/过期，请重置Cookie"
-        return (
-                "Api报错，返回内容为：\r\n"
-                + JsonText + "\r\n出现这种情况可能是UID输入错误 or 不存在"
-        )
-    else:
-        pass
+def abyssAnalysis(aby: ysstructs.GenshinShenJingLuoXuan, udata: ysstructs.GenshinUserData):
+    if not aby.floors:  # 没打
+        return ""
+    rettext = f"深境螺旋信息:\n\t开始时间: {timestamp_to_text(aby.start_time)}\n\t结束时间: {timestamp_to_text(aby.end_time)}" \
+              f"\n\t最深抵达:{aby.max_floor}\n\t胜利场次/总场次: {aby.total_win_times}/{aby.total_battle_times}\n\t" \
+              f"出战最多: {char_id_to_name(udata, aby.reveal_rank[0].avatar_id)} - {aby.reveal_rank[0].value}\n\t" \
+              f"击破最多: {char_id_to_name(udata, aby.defeat_rank[0].avatar_id)} - {aby.defeat_rank[0].value}\n\t" \
+              f"最强一击: {char_id_to_name(udata, aby.damage_rank[0].avatar_id)} - {aby.damage_rank[0].value}\n\t" \
+              f"最高承伤: {char_id_to_name(udata, aby.take_damage_rank[0].avatar_id)} - {aby.take_damage_rank[0].value}\n\t" \
+              f"元素战技: {char_id_to_name(udata, aby.normal_skill_rank[0].avatar_id)} - {aby.normal_skill_rank[0].value}\n\t" \
+              f"元素爆发: {char_id_to_name(udata, aby.energy_skill_rank[0].avatar_id)} - {aby.energy_skill_rank[0].value}\n\t" \
+              f"总星数: ★ {aby.total_star}\n\t"
+
+
+    ftext = ""  # 层
+    for floor in aby.floors:  # 层
+        rtext = ""  # 间
+        for room in floor.levels:  # 间
+            btext = ""  # 场
+            for battle in room.battles:  # 场次
+                ctext = ""  # 角色
+                for char in battle.avatars:  # 角色列表
+                    ctext += f"/{char_id_to_name(udata, char.id)}"
+                btext += f"\n\t\t\t\t第 {battle.index} 场: {ctext[1:]}"
+
+            rtext += f"\n\t\t\t第 {room.index} 间 (★ {room.star}/{room.max_star}):{btext}"
+
+        ftext += f"\n\n\t\t第 {floor.index} 层:\t{rtext}"
+
+    rettext = f"{rettext}楼层信息:{ftext}"
+    return rettext
+
+def dataAnalysis(userid: str):
+    req = ys_api.GetUserInfo()
+    data = req.get_user_info(userid)
+    data_abyss = req.get_user_abyss(userid)
+    abyss_info = abyssAnalysis(data_abyss, data)
+
     Character_Info = "人物：\n\t"
     name_length = []
-    Character_List = data["data"]["avatars"]
+    Character_List = data.avatars
     for i in Character_List:
-        name_length.append(calcStringLength(i["name"]))
+        name_length.append(calcStringLength(i.name))
     namelength_max = int(max(name_length))
     for i in Character_List:
-        Character_Type = elementDict(i["element"], isOculus=False)
-        if i["name"] == "旅行者":
-            if i["image"].find("UI_AvatarIcon_PlayerGirl") != -1:
+        Character_Type = elementDict(i.element, isOculus=False)
+        if i.name == "旅行者":
+            if i.image.find("UI_AvatarIcon_PlayerGirl") != -1:
                 TempText = (
                         spaceWrap(str("荧"), namelength_max) +
-                        "（" + spaceWrap(str(i["level"]), 2) + "级，"
+                        "（" + spaceWrap(str(i.level), 2) + "级，"
                         + Character_Type + "）\n\t"
                 )
-            elif i["image"].find("UI_AvatarIcon_PlayerBoy") != -1:
+            elif i.image.find("UI_AvatarIcon_PlayerBoy") != -1:
                 TempText = (
                         spaceWrap(str("空"), namelength_max) +
-                        "（" + spaceWrap(str(i["level"]), 2) + "级，"
+                        "（" + spaceWrap(str(i.level), 2) + "级，"
                         + Character_Type + "）\n\t"
                 )
             else:
                 TempText = (
-                        i["name"] + "[?]" +
-                        "（" + spaceWrap(str(i["level"]), 2) + "级，"
+                        i.name + "[?]" +
+                        "（" + spaceWrap(str(i.level), 2) + "级，"
                         + Character_Type + "）\n\t"
                 )
         else:
             TempText = (
-                    spaceWrap(str(i["name"]), namelength_max) +
-                    "（" + spaceWrap(str(i["level"]), 2) + "级，"
-                    + str(i["actived_constellation_num"]) + "命，"
-                    + spaceWrap(str(i["fetter"]), 2) + "好感度，"
-                    + re.sub('^105$','5',str(i["rarity"])) + "★，"
+                    spaceWrap(str(i.name), namelength_max) +
+                    "（" + spaceWrap(str(i.level), 2) + "级，"
+                    + str(i.actived_constellation_num) + "命，"
+                    + spaceWrap(str(i.fetter), 2) + "好感度，"
+                    + re.sub('^105$', '5', str(i.rarity)) + "★，"
                     + Character_Type + "）\n\t"
             )
         Character_Info = Character_Info + TempText
     Account_Info = "账号信息：\n\t"
-    Account_Info += "活跃天数：　　" + str(data["data"]["stats"]["active_day_number"]) + "\n\t"
-    Account_Info += "达成成就数量：" + str(data["data"]["stats"]["achievement_number"]) + "个\n\t"
-    for key in data["data"]["stats"]:
-        if re.search(r'culus_number$', key) is not None:
+    Account_Info += "活跃天数：　　" + str(data.stats.active_day_number) + "\n\t"
+    Account_Info += "达成成就数量：" + str(data.stats.achievement_number) + "个\n\t"
+    for key in data.stats:
+        if re.search(r'culus_number$', key[0]) is not None:
             Account_Info = "{}{}已收集：{}个\n\t".format(
                 Account_Info,
-                elementDict(str(key), isOculus=True),  # 判断神瞳属性
-                str(data["data"]["stats"][key])
+                elementDict(str(key[0]), isOculus=True),  # 判断神瞳属性
+                str(key[1])
             )
         else:
             pass
-    Account_Info += "获得角色数量：" + str(data["data"]["stats"]["avatar_number"]) + "个\n\t"
-    Account_Info += "传送点已解锁：" + str(data["data"]["stats"]["way_point_number"]) + "个\n\t"
-    Account_Info += "秘境解锁数量：" + str(data["data"]["stats"]["domain_number"]) + "个\n\t"
+    Account_Info += "获得角色数量：" + str(data.stats.avatar_number) + "个\n\t"
+    Account_Info += "传送点已解锁：" + str(data.stats.way_point_number) + "个\n\t"
+    Account_Info += "秘境解锁数量：" + str(data.stats.domain_number) + "个\n\t"
     Account_Info += "深渊当期进度："
-    if data["data"]["stats"]["spiral_abyss"] != "-":
-        Account_Info += data["data"]["stats"]["spiral_abyss"] + "\n"
+    if data.stats.spiral_abyss != "-":
+        Account_Info += data.stats.spiral_abyss + "\n"
     else:
         Account_Info += "没打\n"
     Account_Info = Account_Info + (
             "\n开启宝箱计数：\n\t" +
-            "普通宝箱：" + str(data["data"]["stats"]["common_chest_number"]) + "个\n\t" +
-            "精致宝箱：" + str(data["data"]["stats"]["exquisite_chest_number"]) + "个\n\t" +
-            "珍贵宝箱：" + str(data["data"]["stats"]["precious_chest_number"]) + "个\n\t" +
-            "华丽宝箱：" + str(data["data"]["stats"]["luxurious_chest_number"]) + "个\n\t" + 
-            "奇馈宝箱：" + str(data["data"]["stats"]["magic_chest_number"]) + "个\n"
+            "普通宝箱：" + str(data.stats.common_chest_number) + "个\n\t" +
+            "精致宝箱：" + str(data.stats.exquisite_chest_number) + "个\n\t" +
+            "珍贵宝箱：" + str(data.stats.precious_chest_number) + "个\n\t" +
+            "华丽宝箱：" + str(data.stats.luxurious_chest_number) + "个\n\t" +
+            "奇馈宝箱：" + str(data.stats.magic_chest_number) + "个\n"
     )
-    Area_list = data["data"]["world_explorations"]
+    Area_list = data.world_explorations
     Prestige_Info = "区域信息：\n"
     ExtraArea_Info = "供奉信息：\n"
 
@@ -228,52 +183,50 @@ def JsonAnalysis(JsonText):
     prestige_info_length = []
     extra_area_info_length = []
     for i in Area_list:
-        prestige_info_length.append(calcStringLength(i["name"] + " "))
-        if len(i["offerings"]) != 0:
-            extra_area_info_length.append(calcStringLength(str(i["offerings"][0]["name"]) + " "))
+        prestige_info_length.append(calcStringLength(i.name + " "))
+        if len(i.offerings) != 0:
+            extra_area_info_length.append(calcStringLength(str(i.offerings[0].name) + " "))
 
     prestige_info_length_max = max(prestige_info_length)
     extra_area_info_length_max = max(extra_area_info_length)
     # 排版结束
 
     for i in Area_list:
-        if (i["type"] == "Reputation"):
+        if (i.type == "Reputation"):
             Prestige_Info = "{}\t{}探索进度：{}%，声望等级：{}级\n".format(
                 Prestige_Info,
-                spaceWrap(i["name"] + " ", prestige_info_length_max),  # 以最长的地名为准，自动补足空格
-                spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4),  # 以xx.x%长度为准，自动补足空格
-                spaceWrap(str(i["level"]), 2)
+                spaceWrap(i.name + " ", prestige_info_length_max),  # 以最长的地名为准，自动补足空格
+                spaceWrap(str(i.exploration_percentage / 10).replace("100.0", "100"), 4),  # 以xx.x%长度为准，自动补足空格
+                spaceWrap(str(i.level), 2)
             )
         else:
             Prestige_Info = "{}\t{}探索进度：{}%\n".format(
                 Prestige_Info,
-                spaceWrap(i["name"] + " ", prestige_info_length_max),  # 以最长的地名为准，自动补足空格
-                spaceWrap(str(i["exploration_percentage"] / 10).replace("100.0", "100"), 4)  # 以xx.x%长度为准，自动补足空格
+                spaceWrap(i.name + " ", prestige_info_length_max),  # 以最长的地名为准，自动补足空格
+                spaceWrap(str(i.exploration_percentage / 10).replace("100.0", "100"), 4)  # 以xx.x%长度为准，自动补足空格
             )
-        if len(i["offerings"]) != 0:
+        if len(i.offerings) != 0:
             ExtraArea_Info = "{}\t{}供奉等级：{}级，位置：{}\n".format(
                 ExtraArea_Info,
-                spaceWrap(str(i["offerings"][0]["name"] + " "), extra_area_info_length_max),
-                spaceWrap(str(i["offerings"][0]["level"]), 2),
-                str(i["name"])
+                spaceWrap(str(i.offerings[0].name + " "), extra_area_info_length_max),
+                spaceWrap(str(i.offerings[0].level), 2),
+                str(i.name)
             )
-    if len(data["data"]["homes"]) > 0:
+    if len(data.homes) > 0:
         Home_Info = "家园信息：\n\t" + spaceWrap("已开启区域：", 16)
-        Home_List = data["data"]["homes"]
+        Home_List = data.homes
         homeworld_list = []
         for i in Home_List:
-            homeworld_list.append(i["name"])
+            homeworld_list.append(i.name)
         Home_Info += '、'.join(homeworld_list) + "\n\t"
-        Home_Info += "最高洞天仙力：  " + str(Home_List[0]["comfort_num"]) + '（' + Home_List[0][
-            "comfort_level_name"] + '）\n\t'
-        Home_Info += "已获得摆件数量：" + str(Home_List[0]["item_num"]) + "\n\t"
-        Home_Info += "最大信任等级：  " + str(Home_List[0]["level"]) + '级' + "\n\t"
-        Home_Info += "最高历史访客数：" + str(Home_List[0]["visit_num"])
+        Home_Info += "最高洞天仙力：  " + str(Home_List[0].comfort_num) + '（' + Home_List[0].comfort_level_name + '）\n\t'
+        Home_Info += "已获得摆件数量：" + str(Home_List[0].item_num) + "\n\t"
+        Home_Info += "最大信任等级：  " + str(Home_List[0].level) + '级' + "\n\t"
+        Home_Info += "最高历史访客数：" + str(Home_List[0].visit_num)
     else:
         Home_Info = "家园信息：\n\t" + "家园暂未开启！"
 
-    return (
-            Character_Info + "\r\n" + Account_Info + "\r\n" + Prestige_Info + "\r\n" + ExtraArea_Info + "\r\n" + Home_Info)
+    return (f"{Character_Info}\r\n{Account_Info}\r\n{Prestige_Info}\r\n{ExtraArea_Info}\r\n{Home_Info}\r\n\n{abyss_info}")
 
 
 def infoQuery(uid):
@@ -286,23 +239,25 @@ def infoQuery(uid):
             print("输入有误！")
     if len(uid) == 9:
         print("正在查询UID" + uid + "的原神信息")
-        if uid[0] == "1" or uid[0] == "2":
-            UidInfo = JsonAnalysis(GetInfo(uid, "cn_gf01"))
-            print("uid " + uid + "(官服)的信息为：\r\n" + UidInfo + "\n以上为UID：" + str(uid) + "的查询结果\n")
+        if uid[0] in ["1", "2"]:
+            _server = "官服"
         elif uid[0] == "5":
-            UidInfo = JsonAnalysis(GetInfo(uid, "cn_qd01"))
-            print("uid " + uid + "(B服)的信息为：\r\n" + UidInfo)
+            _server = "B服"
         elif uid[0] in "6789":
-            server = {
+            _server = {
                 "6": "os_usa",
                 "7": "os_euro",
                 "8": "os_asia",
                 "9": "os_cht",
             }[uid[0]]
-            UidInfo = JsonAnalysis(GetInfo(uid, server, overseas=True))
-            print("uid " + uid + "\r\n" + UidInfo)
+
         else:
             print("UID输入有误！！\r\n请检查UID是否为国服UID！")
+            return
+
+        UidInfo = dataAnalysis(uid)
+        print(f"uid {uid}({_server})的信息为:\r\n" + UidInfo)
+
     else:
         print("UID长度有误！！\r\n请检查输入的UID是否为9位数！")
 
