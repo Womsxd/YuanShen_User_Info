@@ -5,6 +5,7 @@ import time
 import random
 import ys_api
 from ys_api import structs as ysstructs
+from ys_api import UserDataMaxRetryError
 from ys_api.cookie_set import timestamp_to_text
 
 # Github-@lulu666lulu https://github.com/Azure99/GenshinPlayerQuery/issues/20
@@ -277,11 +278,19 @@ if __name__ == "__main__":
         quit()
     else:
         while True:
-            uid = input("请输入要查询的国服UID(多个UID请使用空格分隔，退出输入exit或q)：")
-            uidList = uid.split(' ')
-            i = 1
-            for uid in uidList:
-                infoQuery(uid)
-                i += 1
-                if i <= len(uidList):
-                    sleep(4, i)
+            try:
+                uid = input("请输入要查询的国服UID(多个UID请使用空格分隔，退出输入exit或q)：")
+                uidList = uid.split(' ')
+                i = 1
+                for uid in uidList:
+                    infoQuery(uid)
+                    i += 1
+                    if i <= len(uidList):
+                        sleep(4, i)
+
+            except UserDataMaxRetryError:
+                print("已达到最大出错次数, 请检查您的cookie")
+                break
+
+            except Exception as sb:
+                print(sb)

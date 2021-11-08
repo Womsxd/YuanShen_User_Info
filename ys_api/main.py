@@ -126,14 +126,14 @@ class GetUserInfo(MiHoYoCookie):
 
     def check_code(self, code, cookie: str):
         retcode = str(code)
-        if retcode == "10001":  # cookie过期
+        if retcode == "10001":  # cookie过期, 删除此项
             self.check_limit(cookie=cookie, remove=True)
             return False
 
         elif retcode == "10102":  # 隐私设置
             raise RuntimeError("用户设置了隐私")
 
-        elif retcode == "10101":  # 触发30次上限
+        elif retcode == "10101":  # 触发30次上限, 标记此cookie, 今天将不再使用
             self.check_limit(cookie=cookie, to_limit=True)
             return False
 
