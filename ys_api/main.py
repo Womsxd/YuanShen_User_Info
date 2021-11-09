@@ -161,7 +161,7 @@ class GetUserInfo(MiHoYoCookie):
             if self.scount >= 2:
                 raise UserDataMaxRetryError("已达到最大出错次数, 请检查您的cookie")
             self.scount += 1
-            self._get_user_info(uid, func_call, func_ret)  # 出错(cookie过期或失效)重试
+            return self._get_user_info(uid, func_call, func_ret)  # 出错(cookie过期或失效)重试
 
         self.scount = 0  # 重置计数
 
