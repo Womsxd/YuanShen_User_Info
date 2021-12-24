@@ -74,7 +74,7 @@ def GetInfo(Uid, ServerID, cookie: str, overseas=False):
         )
     else:
         req = requests.get(
-            url=f"https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server={ServerID}&role_id={Uid}",
+            url=f"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/index?server={ServerID}&role_id={Uid}",
             headers={
                 'Accept': 'application/json, text/plain, */*',
                 'DS': DSGet(f"role_id={Uid}&server={ServerID}"),
@@ -95,7 +95,7 @@ def GetInfo(Uid, ServerID, cookie: str, overseas=False):
 def userAbyss(uid, ServerID: str, cookie: str, overseas=False, Schedule_type="1"):
     ck = cookie
     if not overseas:
-        url = f"https://api-takumi.mihoyo.com/game_record/app/genshin/api/spiralAbyss?" \
+        url = f"https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/spiralAbyss?" \
               f"schedule_type={Schedule_type}&server={ServerID}&role_id={uid}"
         _ver = mhyVersion
         _ctype = client_type
