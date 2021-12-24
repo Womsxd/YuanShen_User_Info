@@ -13,13 +13,13 @@ from ys_api.cookie_set import timestamp_to_text
 {body:"",query:{"action_ticket": undefined, "game_biz": "hk4e_cn”}}
 对应 https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn //查询米哈游账号下绑定的游戏(game_biz可留空)
 {body:"",query:{"uid": 12345(被查询账号米哈游uid)}}
-对应 https://api-takumi.mihoyo.com/game_record/app/card/wapi/getGameRecordCard?uid=
+对应 https://api-takumi-record.mihoyo.com/game_record/app/card/wapi/getGameRecordCard?uid=
 {body:"",query:{'role_id': '查询账号的uid(游戏里的)' ,'server': '游戏服务器'}}
-对应 https://api-takumi.mihoyo.com/game_record/app/genshin/api/index?server= server信息 &role_id= 游戏uid
+对应 https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/index?server= server信息 &role_id= 游戏uid
 {body:"",query:{'role_id': '查询账号的uid(游戏里的)' , 'schedule_type': 1(我这边只看到出现过1和2), 'server': 'cn_gf01'}}
-对应 https://api-takumi.mihoyo.com/game_record/app/genshin/api/spiralAbyss?schedule_type=1&server= server信息 &role_id= 游戏uid
+对应 https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/spiralAbyss?schedule_type=1&server= server信息 &role_id= 游戏uid
 {body:"",query:{game_id: 2(目前我知道有崩坏3是1原神是2)}}
-对应 https://api-takumi.mihoyo.com/game_record/app/card/wapi/getAnnouncement?game_id=    这个是公告api
+对应 https://api-takumi-record.mihoyo.com/game_record/app/card/wapi/getAnnouncement?game_id=    这个是公告api
 b=body q=query
 其中b只在post的时候有内容，q只在get的时候有内容
 '''
