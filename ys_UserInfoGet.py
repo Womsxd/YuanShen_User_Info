@@ -3,6 +3,8 @@ import re
 import sys
 import time
 import random
+import json
+import os
 import ys_api
 from ys_api import structs as ysstructs
 from ys_api import UserDataMaxRetryError
@@ -24,6 +26,7 @@ b=body q=query
 其中b只在post的时候有内容，q只在get的时候有内容
 '''
 
+id2name = None
 
 def calcStringLength(text):
     # 令len(str(string).encode()) = m, len(str(string)) = n
@@ -71,6 +74,12 @@ def char_id_to_name(udata: ysstructs.GenshinUserData, charid: int):  # id2name.j
     for char in chars:
         if charid == char.id:
             return char.name
+    global id2name
+    if not id2name:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "id2name.json"), "r") as f:
+            id2name = json.load(f)
+    if str(charid) in id2name:
+        return id2name[str(charid)]
     return f"{charid}"
 
 def abyssAnalysis(aby: ysstructs.GenshinShenJingLuoXuan, udata: ysstructs.GenshinUserData):
