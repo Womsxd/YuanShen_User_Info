@@ -59,52 +59,52 @@ class GenshinUserData(BaseModel):
     world_explorations: List[GenshinWorldInfo]  # 区域探索信息
     homes: List[GenshinHomeInfo]  # 家园信息
 
-class GenshinSJLXRankInfo(BaseModel):
+class GenshinAbyssRankInfo(BaseModel):
     avatar_id: int
     avatar_icon: str
     value: int
     rarity: int
 
-class GenshinSJLXFloorInfoBattlesAvatars(BaseModel):
+class GenshinAbyssFloorInfoBattlesAvatars(BaseModel):
     id: int
     icon: str
     level: int
     rarity: int
 
-class GenshinSJLXFloorInfoBattles(BaseModel):
+class GenshinAbyssFloorInfoBattles(BaseModel):
     index: int  # 战斗场次
     timestamp: str
-    avatars: List[GenshinSJLXFloorInfoBattlesAvatars]
+    avatars: List[GenshinAbyssFloorInfoBattlesAvatars]
 
-class GenshinSJLXFloorInfo(BaseModel):
+class GenshinAbyssFloorInfo(BaseModel):
     index: int  # 间号
     star: int
     max_star: int
-    battles: List[GenshinSJLXFloorInfoBattles]
+    battles: List[GenshinAbyssFloorInfoBattles]
 
-class GenshinSJLXFloors(BaseModel):
+class GenshinAbyssFloors(BaseModel):
     index: int  # 层数
     icon: str  # 空的
     is_unlock: bool
     settle_time: str
     star: int
     max_star: int
-    levels: List[GenshinSJLXFloorInfo]
+    levels: List[GenshinAbyssFloorInfo]
 
-class GenshinShenJingLuoXuan(BaseModel):
+class GenshinAbyss(BaseModel):
     schedule_id: int
     start_time: int  # 10位
     end_time: int  # 10位
     total_battle_times: int
     total_win_times: int
     max_floor: str
-    reveal_rank: List[GenshinSJLXRankInfo]  # 出战次数Rank
-    defeat_rank: List[GenshinSJLXRankInfo]  # 击破数Rank
-    damage_rank: List[GenshinSJLXRankInfo]  # 最强一击
-    take_damage_rank: List[GenshinSJLXRankInfo]  # 承伤Rank
-    normal_skill_rank: List[GenshinSJLXRankInfo]  # 元素战技释放数
-    energy_skill_rank: List[GenshinSJLXRankInfo]  # 元素爆发次数
-    floors: List[GenshinSJLXFloors]
+    reveal_rank: List[GenshinAbyssRankInfo]  # 出战次数Rank
+    defeat_rank: List[GenshinAbyssRankInfo]  # 击破数Rank
+    damage_rank: List[GenshinAbyssRankInfo]  # 最强一击
+    take_damage_rank: List[GenshinAbyssRankInfo]  # 承伤Rank
+    normal_skill_rank: List[GenshinAbyssRankInfo]  # 元素战技释放数
+    energy_skill_rank: List[GenshinAbyssRankInfo]  # 元素爆发次数
+    floors: List[GenshinAbyssFloors]
     total_star: int
     is_unlock: bool
 

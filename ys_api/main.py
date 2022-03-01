@@ -3,7 +3,7 @@ import time
 import random
 import hashlib
 import requests
-from .structs import GenshinUserData, GenshinShenJingLuoXuan
+from .structs import GenshinUserData, GenshinAbyss
 from .cookie_set import MiHoYoCookie
 from .settings import *
 from typing import Tuple
@@ -175,10 +175,10 @@ class GetUserInfo(MiHoYoCookie):
         """
         return self._get_user_info(uid, GetInfo, GenshinUserData)
 
-    def get_user_abyss(self, uid: str) -> GenshinShenJingLuoXuan:  # 深境螺旋
+    def get_user_abyss(self, uid: str) -> GenshinAbyss:  # 深境螺旋
         """
         深境螺旋信息
         :param uid: 原神uid
-        :return: GenshinShenJingLuoXuan
+        :return: GenshinAbyss
         """
-        return self._get_user_info(uid, userAbyss, GenshinShenJingLuoXuan)
+        return self._get_user_info(uid, userAbyss, GenshinAbyss)
